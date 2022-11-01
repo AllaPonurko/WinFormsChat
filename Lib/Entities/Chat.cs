@@ -15,5 +15,6 @@ namespace Lib.Entities
         public Guid Id;
         public List<User> Companions { get; set; }
         public List<MyMessage> Correspondence { get; set; }
-}
+        public Guid GroupId { get; set; }
+    }
 }
