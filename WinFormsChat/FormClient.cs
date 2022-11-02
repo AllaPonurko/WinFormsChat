@@ -23,10 +23,10 @@ namespace WinFormsChat
             InitializeComponent();
 
         }
-        public static TempUser temp = new TempUser();
-       public DbChat dbChat = new DbChat();
+       public static TempUser temp = new TempUser();
         private void btnEnter_Click(object sender, EventArgs e)
         {
+            
             if(txtLogin.Text.Length==0)
             {
                 MessageBox.Show("Не заполнен логин");
