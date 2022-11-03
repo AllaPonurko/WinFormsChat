@@ -16,7 +16,7 @@ namespace WinFormsChat
         {
             InitializeComponent();
         }
-        User NewUser = new User(Form1.temp.Name,Form1.temp.Pass);
+        User NewUser = new User(FormClient.temp.Name,FormClient.temp.Pass);
         MyMessage NewMessage = new MyMessage();
         Chat NewChat = new Chat();
         private void FormChat_Load(object sender, EventArgs e)

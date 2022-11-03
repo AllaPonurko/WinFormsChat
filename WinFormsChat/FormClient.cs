@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lib.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -18,9 +19,9 @@ namespace WinFormsChat
         public string Name;
         public string Pass;
     }
-    public partial class Form1 : Form
+    public partial class FormClient : Form
     {
-        public Form1()
+        public FormClient()
         {
             InitializeComponent();
 
@@ -121,8 +122,12 @@ namespace WinFormsChat
             }
             if(txtLogin.Text.Length != 0 & txtPassword.Text.Length != 0)
             {
-                state.sb.Append( txtLogin.Text+" "+txtPassword.Text);
+                //state.sb.Append( txtLogin.Text+" "+txtPassword.Text);
+                Auth auth = new Auth();
+                auth.Email = txtLogin.Text;
+                auth.Pass = txtPassword.Text;
                 AsyncConnect();
+
                 //if(dbChat.Users!=null)
                 //{
                 //    var log = (from users in dbChat.Users
@@ -135,7 +140,7 @@ namespace WinFormsChat
                 //    temp.Pass = pass;
                     //FormChat chat = new FormChat();
                     //chat.Show();   
-                }
+                
                 
             }
 
