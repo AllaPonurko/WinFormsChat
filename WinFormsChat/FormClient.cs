@@ -121,7 +121,8 @@ namespace WinFormsChat
             }
             if(txtLogin.Text.Length != 0 & txtPassword.Text.Length != 0)
             {
-                state.sb.Append( txtLogin.Text);
+                state.sb.Append( txtLogin.Text+" "+txtPassword.Text);
+                AsyncConnect();
                 //if(dbChat.Users!=null)
                 //{
                 //    var log = (from users in dbChat.Users
