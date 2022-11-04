@@ -1,4 +1,4 @@
-﻿using Lib.Entities;
+﻿using Lib.MyDbContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using WinFormsServer.Entities;
+using FormsServer.Entities;
 
 namespace WinFormsChat
 {
@@ -30,7 +30,7 @@ namespace WinFormsChat
                 return;
             else
             {
-                lstChat.Items.Add(txtMessage.Text.ToString()+"\n"+DateTime.Now.ToShortTimeString());
+                lstChatOut.Items.Add(txtMessage.Text.ToString()+"\n"+DateTime.Now.ToShortTimeString());
                 NewMessage.Msg = txtMessage.Text.ToString();
                 NewUser.Messages.Add(NewMessage);
                 NewChat.Companions.Add(NewUser);

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
-using WinFormsServer.Entities;
+using FormsServer.Entities;
 
-namespace Lib.Entities
+namespace Lib.MyDbContext
 {
     [Serializable]
     public class Chat

@@ -1,4 +1,4 @@
-﻿using Lib.Entities;
+﻿using Lib.MyDbContext;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WinFormsServer.MyDbContext;
+using FormsServer.MyDbContext;
 
 namespace WinFormsChat
 {
@@ -122,12 +122,12 @@ namespace WinFormsChat
             }
             if(txtLogin.Text.Length != 0 & txtPassword.Text.Length != 0)
             {
-                //state.sb.Append( txtLogin.Text+" "+txtPassword.Text);
+                
                 Auth auth = new Auth();
                 auth.Email = txtLogin.Text;
                 auth.Pass = txtPassword.Text;
                 AsyncConnect();
-
+                MessageBox.Show(auth.ToString());
                 //if(dbChat.Users!=null)
                 //{
                 //    var log = (from users in dbChat.Users
@@ -138,10 +138,10 @@ namespace WinFormsChat
                 //              select users.Password).First().ToString();
                 //    temp.Name = log;
                 //    temp.Pass = pass;
-                    //FormChat chat = new FormChat();
-                    //chat.Show();   
-                
-                
+                FormChat chat = new FormChat();
+                chat.Show();
+
+
             }
 
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WinFormsChat;
 
-namespace WinFormsServer
+namespace FormsServer
 {
     public class Server
     {
@@ -26,7 +26,7 @@ namespace WinFormsServer
         }
         public void Run()//делегат для инициализации новой задачи по запуску сервера
         {
-            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Any, port);
+            IPEndPoint iPEnd = new IPEndPoint(/*IPAddress.Any*/IPAddress.Parse("127.0.0.1"), port);
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
@@ -36,7 +36,7 @@ namespace WinFormsServer
                 {
                     Socket incoming = socket.Accept();//входящее соединение
                     Client client = new Client(incoming);//инициализируем клиента входящим соединением
-                    Task task = new Task(client.run);//создаём новую задачу по обработке клиента
+                    Task task = new Task(client.run_connect);//создаём новую задачу по обработке клиента
                     task.Start();//запускаем задачу
                 }
             }

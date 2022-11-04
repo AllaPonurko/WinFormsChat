@@ -1,11 +1,11 @@
-﻿using Lib.Entities;
+﻿using Lib.MyDbContext;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using WinFormsServer.Entities;
+using FormsServer.Entities;
 
-namespace WinFormsServer.MyDbContext
+namespace FormsServer.MyDbContext
 {
     public class DbChat:DbContext
     {

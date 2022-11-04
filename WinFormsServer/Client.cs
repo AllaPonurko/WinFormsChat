@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Lib.MyDbContext;
+using Lib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
@@ -6,7 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using WinFormsServer.Entities;
+using FormsServer.Entities;
+using System.Linq;
 
 namespace WinFormsChat
 {
@@ -49,7 +52,7 @@ namespace WinFormsChat
                         switch (request.Command)
                         {
                             case Lib.Enum.RequestCommand.Auth:
-                                Lib.Entities.Auth auth = (Lib.Entities.Auth)request.Body;
+                                Lib.MyDbContext.Auth auth = (Lib.MyDbContext.Auth)request.Body;
                                 MessageBox.Show(auth.Email);
                                 break;
                             case Lib.Enum.RequestCommand.Read:
@@ -78,7 +81,13 @@ namespace WinFormsChat
             }
 
         }
-
+        public List<MyMessage> GetMessages(User CurrentUser)
+        {
+            List<MyMessage> messages = new List<MyMessage>();
+            var m = (from msg in FormsServer.FormServer.dbChat.Messages where
+                     CurrentUser.Id == msg.UserId select msg).ToList();
+            return messages;
+        }
 
         /// <summary>
         /// Процесс работы с клиентом

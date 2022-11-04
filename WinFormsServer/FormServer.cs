@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FormsServer.MyDbContext;
 
-namespace WinFormsServer
+namespace FormsServer
 {
     public partial class FormServer : Form
     {
@@ -16,8 +17,9 @@ namespace WinFormsServer
         {
             InitializeComponent();
             server.ServerStart();
+            dbChat = new DbChat();
         }
         Server server = new Server(40);
-        
+        public static DbChat dbChat;
     }
 }

@@ -1,5 +1,5 @@
 ﻿
-namespace WinFormsServer
+namespace FormsServer
 {
     partial class FormServer
     {
