@@ -10,7 +10,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FormsServer.MyDbContext;
 
 namespace WinFormsChat
 {
@@ -128,19 +127,8 @@ namespace WinFormsChat
                 auth.Pass = txtPassword.Text;
                 AsyncConnect();
                 MessageBox.Show(auth.ToString());
-                //if(dbChat.Users!=null)
-                //{
-                //    var log = (from users in dbChat.Users
-                //               where users.Login == txtLogin.Text & users.Password== txtPassword.Text
-                //               select users).First().ToString();
-                //    var pass=(from users in dbChat.Users
-                //              where users.Login == txtLogin.Text & users.Password == txtPassword.Text
-                //              select users.Password).First().ToString();
-                //    temp.Name = log;
-                //    temp.Pass = pass;
                 FormChat chat = new FormChat();
                 chat.Show();
-
 
             }
 

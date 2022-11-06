@@ -6,7 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using FormsServer.Entities;
+
 
 namespace WinFormsChat
 {
@@ -16,9 +16,7 @@ namespace WinFormsChat
         {
             InitializeComponent();
         }
-        User NewUser = new User(FormClient.temp.Name,FormClient.temp.Pass);
-        MyMessage NewMessage = new MyMessage();
-        Chat NewChat = new Chat();
+        
         private void FormChat_Load(object sender, EventArgs e)
         {
 
@@ -31,10 +29,7 @@ namespace WinFormsChat
             else
             {
                 lstChatOut.Items.Add(txtMessage.Text.ToString()+"\n"+DateTime.Now.ToShortTimeString());
-                NewMessage.Msg = txtMessage.Text.ToString();
-                NewUser.Messages.Add(NewMessage);
-                NewChat.Companions.Add(NewUser);
-                NewChat.Correspondence.Add(NewMessage);
+               
             }
         }
     }
