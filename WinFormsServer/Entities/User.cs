@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using FormsServer.Entities;
 
-namespace Lib.MyDbContext
+namespace FormsServer.Entities
 {
     [Serializable]
     public class User

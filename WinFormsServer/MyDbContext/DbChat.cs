@@ -1,4 +1,4 @@
-﻿using Lib.MyDbContext;
+﻿using Lib.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Lib.MyDbContext
+namespace Lib.Entities
 {
     [Serializable]
     public class Auth

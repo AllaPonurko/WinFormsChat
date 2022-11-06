@@ -1,4 +1,4 @@
-﻿using Lib.MyDbContext;
+﻿using Lib.Entities;
 using Lib;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using FormsServer.Entities;
 using System.Linq;
 
-namespace WinFormsChat
+namespace FormsServer
 {
     public class Client
     {
@@ -42,17 +42,17 @@ namespace WinFormsChat
                 while (socket.Available > 0);
 
                 BinaryFormatter formatter = new BinaryFormatter();
-                Lib.Request request;
+                Request request;
 
                 using (MemoryStream ms = new MemoryStream(buffer))
                 {
                     try
                     {
-                        request = (Lib.Request)formatter.Deserialize(ms);
+                        request = (Request)formatter.Deserialize(ms);
                         switch (request.Command)
                         {
                             case Lib.Enum.RequestCommand.Auth:
-                                Lib.MyDbContext.Auth auth = (Lib.MyDbContext.Auth)request.Body;
+                                Auth auth = (Auth)request.Body;
                                 MessageBox.Show(auth.Email);
                                 break;
                             case Lib.Enum.RequestCommand.Read:
@@ -60,8 +60,9 @@ namespace WinFormsChat
                                 myMessages = (List<MyMessage>)request.Body;
                                 break;
                             case Lib.Enum.RequestCommand.Create:
-                                MyMessage message = new MyMessage();
-                                message = (MyMessage)request.Body;
+                                Auth auth1 = new Auth();
+                                User newUser = new User(auth1.Email,auth1.Pass);
+                                
                                 break;
                             case Lib.Enum.RequestCommand.Update:
 

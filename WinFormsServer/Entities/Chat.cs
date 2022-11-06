@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using FormsServer.Entities;
+using Lib.Entities;
 
-namespace Lib.MyDbContext
+namespace FormsServer.Entities
 {
     [Serializable]
     public class Chat

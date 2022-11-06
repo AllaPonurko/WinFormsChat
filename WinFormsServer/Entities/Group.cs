@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Lib.Entities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Lib.MyDbContext
+namespace FormsServer.Entities
 {
     [Serializable]
     public class Group
