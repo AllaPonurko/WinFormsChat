@@ -33,16 +33,18 @@ namespace WinFormsChat
             this.btnEnter = new System.Windows.Forms.Button();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnDeleteMessage = new System.Windows.Forms.Button();
+            this.lstChatIn = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnDeleteContact = new System.Windows.Forms.Button();
+            this.btnOpenChat = new System.Windows.Forms.Button();
+            this.btnEditContact = new System.Windows.Forms.Button();
+            this.btnAddContact = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lstChatIn = new System.Windows.Forms.ListBox();
-            this.btnAddContact = new System.Windows.Forms.Button();
-            this.btnEditContact = new System.Windows.Forms.Button();
-            this.btnOpenChat = new System.Windows.Forms.Button();
-            this.btnDeleteContact = new System.Windows.Forms.Button();
-            this.btnDeleteMessage = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -81,10 +83,28 @@ namespace WinFormsChat
             this.panel1.Controls.Add(this.lstChatOut);
             this.panel1.Controls.Add(this.btnEnter);
             this.panel1.Controls.Add(this.txtMessage);
-            this.panel1.Location = new System.Drawing.Point(273, 27);
+            this.panel1.Location = new System.Drawing.Point(459, 28);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 268);
             this.panel1.TabIndex = 3;
+            // 
+            // btnDeleteMessage
+            // 
+            this.btnDeleteMessage.Location = new System.Drawing.Point(110, 235);
+            this.btnDeleteMessage.Name = "btnDeleteMessage";
+            this.btnDeleteMessage.Size = new System.Drawing.Size(90, 23);
+            this.btnDeleteMessage.TabIndex = 4;
+            this.btnDeleteMessage.Text = "Удалить";
+            this.btnDeleteMessage.UseVisualStyleBackColor = true;
+            // 
+            // lstChatIn
+            // 
+            this.lstChatIn.FormattingEnabled = true;
+            this.lstChatIn.ItemHeight = 15;
+            this.lstChatIn.Location = new System.Drawing.Point(101, 3);
+            this.lstChatIn.Name = "lstChatIn";
+            this.lstChatIn.Size = new System.Drawing.Size(99, 199);
+            this.lstChatIn.TabIndex = 3;
             // 
             // panel2
             // 
@@ -93,10 +113,46 @@ namespace WinFormsChat
             this.panel2.Controls.Add(this.btnEditContact);
             this.panel2.Controls.Add(this.btnAddContact);
             this.panel2.Controls.Add(this.listBox1);
-            this.panel2.Location = new System.Drawing.Point(23, 28);
+            this.panel2.Location = new System.Drawing.Point(211, 31);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(200, 267);
             this.panel2.TabIndex = 4;
+            // 
+            // btnDeleteContact
+            // 
+            this.btnDeleteContact.Location = new System.Drawing.Point(94, 233);
+            this.btnDeleteContact.Name = "btnDeleteContact";
+            this.btnDeleteContact.Size = new System.Drawing.Size(105, 23);
+            this.btnDeleteContact.TabIndex = 4;
+            this.btnDeleteContact.Text = "Удалить";
+            this.btnDeleteContact.UseVisualStyleBackColor = true;
+            // 
+            // btnOpenChat
+            // 
+            this.btnOpenChat.Location = new System.Drawing.Point(0, 233);
+            this.btnOpenChat.Name = "btnOpenChat";
+            this.btnOpenChat.Size = new System.Drawing.Size(88, 23);
+            this.btnOpenChat.TabIndex = 3;
+            this.btnOpenChat.Text = "Открыть";
+            this.btnOpenChat.UseVisualStyleBackColor = true;
+            // 
+            // btnEditContact
+            // 
+            this.btnEditContact.Location = new System.Drawing.Point(94, 204);
+            this.btnEditContact.Name = "btnEditContact";
+            this.btnEditContact.Size = new System.Drawing.Size(105, 23);
+            this.btnEditContact.TabIndex = 2;
+            this.btnEditContact.Text = "Редактировать";
+            this.btnEditContact.UseVisualStyleBackColor = true;
+            // 
+            // btnAddContact
+            // 
+            this.btnAddContact.Location = new System.Drawing.Point(0, 204);
+            this.btnAddContact.Name = "btnAddContact";
+            this.btnAddContact.Size = new System.Drawing.Size(88, 23);
+            this.btnAddContact.TabIndex = 1;
+            this.btnAddContact.Text = "Добавить";
+            this.btnAddContact.UseVisualStyleBackColor = true;
             // 
             // listBox1
             // 
@@ -110,7 +166,7 @@ namespace WinFormsChat
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 9);
+            this.label1.Location = new System.Drawing.Point(211, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(106, 15);
             this.label1.TabIndex = 5;
@@ -119,71 +175,35 @@ namespace WinFormsChat
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(273, 8);
+            this.label2.Location = new System.Drawing.Point(459, 9);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(104, 15);
             this.label2.TabIndex = 6;
             this.label2.Text = "Окно сообщений";
             // 
-            // lstChatIn
+            // label3
             // 
-            this.lstChatIn.FormattingEnabled = true;
-            this.lstChatIn.ItemHeight = 15;
-            this.lstChatIn.Location = new System.Drawing.Point(101, 3);
-            this.lstChatIn.Name = "lstChatIn";
-            this.lstChatIn.Size = new System.Drawing.Size(99, 199);
-            this.lstChatIn.TabIndex = 3;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(23, 13);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(142, 15);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Добро пожаловать в чат";
             // 
-            // btnAddContact
+            // txtName
             // 
-            this.btnAddContact.Location = new System.Drawing.Point(0, 204);
-            this.btnAddContact.Name = "btnAddContact";
-            this.btnAddContact.Size = new System.Drawing.Size(88, 23);
-            this.btnAddContact.TabIndex = 1;
-            this.btnAddContact.Text = "Добавить";
-            this.btnAddContact.UseVisualStyleBackColor = true;
-            // 
-            // btnEditContact
-            // 
-            this.btnEditContact.Location = new System.Drawing.Point(94, 204);
-            this.btnEditContact.Name = "btnEditContact";
-            this.btnEditContact.Size = new System.Drawing.Size(105, 23);
-            this.btnEditContact.TabIndex = 2;
-            this.btnEditContact.Text = "Редактировать";
-            this.btnEditContact.UseVisualStyleBackColor = true;
-            // 
-            // btnOpenChat
-            // 
-            this.btnOpenChat.Location = new System.Drawing.Point(0, 233);
-            this.btnOpenChat.Name = "btnOpenChat";
-            this.btnOpenChat.Size = new System.Drawing.Size(88, 23);
-            this.btnOpenChat.TabIndex = 3;
-            this.btnOpenChat.Text = "Открыть";
-            this.btnOpenChat.UseVisualStyleBackColor = true;
-            // 
-            // btnDeleteContact
-            // 
-            this.btnDeleteContact.Location = new System.Drawing.Point(94, 233);
-            this.btnDeleteContact.Name = "btnDeleteContact";
-            this.btnDeleteContact.Size = new System.Drawing.Size(105, 23);
-            this.btnDeleteContact.TabIndex = 4;
-            this.btnDeleteContact.Text = "Удалить";
-            this.btnDeleteContact.UseVisualStyleBackColor = true;
-            // 
-            // btnDeleteMessage
-            // 
-            this.btnDeleteMessage.Location = new System.Drawing.Point(110, 235);
-            this.btnDeleteMessage.Name = "btnDeleteMessage";
-            this.btnDeleteMessage.Size = new System.Drawing.Size(90, 23);
-            this.btnDeleteMessage.TabIndex = 4;
-            this.btnDeleteMessage.Text = "Удалить";
-            this.btnDeleteMessage.UseVisualStyleBackColor = true;
+            this.txtName.Location = new System.Drawing.Point(23, 34);
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(142, 23);
+            this.txtName.TabIndex = 8;
             // 
             // FormChat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel2);
@@ -215,5 +235,7 @@ namespace WinFormsChat
         private System.Windows.Forms.Button btnOpenChat;
         private System.Windows.Forms.Button btnEditContact;
         private System.Windows.Forms.Button btnAddContact;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtName;
     }
 }

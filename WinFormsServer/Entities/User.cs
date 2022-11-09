@@ -18,10 +18,8 @@ namespace FormsServer.Entities
         public ICollection<MyMessage> Messages { get; set; }
         public Guid GroupId;
         public Guid ChatId;
-        public User(string login,string password)
+        public User()
         {
-            Login = login;
-            Password = password;
             Messages = new List<MyMessage>();
         }
         public override string ToString()
