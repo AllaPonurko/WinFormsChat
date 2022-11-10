@@ -26,10 +26,11 @@ namespace FormsServer
             Id = Guid.NewGuid().ToString();
             tcpClient = client;
             server = serverObject;
-            serverObject.AddConnection(this);
+            server.AddConnection(this);
+            NewUser = new User();
         }
         public User NewUser { get; set; }
-        TcpClient tcpClient;
+        TcpClient tcpClient=new TcpClient();
         Server server;
         public void Process()
         {
@@ -43,7 +44,7 @@ namespace FormsServer
                 message = NewUser.Login + " вошел в чат";
                 // посылаем сообщение о входе в чат всем подключенным пользователям
                 server.BroadcastMessage(message, this.Id);
-                Console.WriteLine(message);
+                MessageBox.Show(message);
                 // в бесконечном цикле получаем сообщения от клиента
                 while (true)
                 {
@@ -51,7 +52,6 @@ namespace FormsServer
                     {
                         message = GetMessage();
                         message = String.Format("{0}: {1}", NewUser.Login, message);
-                        Console.WriteLine(message);
                         server.BroadcastMessage(message, this.Id);
                     }
                     catch
@@ -76,8 +76,8 @@ namespace FormsServer
         }
         protected internal void Close()
         {
-            if (Stream != null)
-                Stream.Close();
+            if (Stream != null)// если есть что закрыть
+                Stream.Close();//закрываем
             if (tcpClient != null)
                 tcpClient.Close();
         }

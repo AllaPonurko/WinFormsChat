@@ -17,16 +17,15 @@ namespace WinFormsChat
         static NetworkStream stream;
         public ChatClient()
         {
-            client = new TcpClient();
+            client = new TcpClient((AddressFamily)port);
         }
         public void Connection(string name)//соединение и подключение клиента
         {
             userName = name;
             try
             {
-                client.Connect(host, port); //подключение клиента
+                client.ConnectAsync(host, port); //подключение клиента
                 stream = client.GetStream(); // получаем поток
-
                 string message = userName;
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 stream.Write(data, 0, data.Length);
@@ -35,14 +34,18 @@ namespace WinFormsChat
                 Task receiveTask = new Task(ReceiveMessage);
                 receiveTask.Start(); //старт потока
                 MessageBox.Show("Добро пожаловать, {0}", userName);
-                SendMessage();
+                Thread.Sleep(1000);
+                //запускаем новый поток для отправка данных
+                Task sendTask =new Task( SendMessage);
+                sendTask.Start();
+                Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                MessageBox.Show(ex.Message);
             }
             finally
-            {
+            { 
                 Disconnect();
             }
         }
@@ -51,7 +54,7 @@ namespace WinFormsChat
         {
             while (true)
             {
-                string message = FormChat.NewMess.mess;
+                string message = FormChat.MyMess.ToString();
                 byte[] data = Encoding.Unicode.GetBytes(message);
                 stream.Write(data, 0, data.Length);
             }
@@ -73,7 +76,9 @@ namespace WinFormsChat
                     while (stream.DataAvailable);
 
                     string message = builder.ToString();
-                    Console.WriteLine(message);//вывод сообщения
+                    Mess.mess=message;
+                    //вывод сообщения
+                    
                 }
                 catch
                 {
@@ -89,7 +94,7 @@ namespace WinFormsChat
                 stream.Close();//отключение потока
             if (client != null)
                 client.Close();//отключение клиента
-            Environment.Exit(0); //завершение процесса
+            //Environment.Exit(0); //завершение процесса
         }
     
 

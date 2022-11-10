@@ -77,8 +77,8 @@ namespace FormsServer
                     TcpClient tcpClient = tcpListener.AcceptTcpClient();
 
                     Client clientObject = new Client(tcpClient, this);
-                    Thread clientThread = new Thread(new ThreadStart(clientObject.Process));
-                    clientThread.Start();
+                    Task clientTask = new Task(clientObject.Process);
+                    clientTask.Start();
                 }
             }
             catch (Exception ex)
@@ -110,6 +110,23 @@ namespace FormsServer
                 clients[i].Close(); //отключение клиента
             }
             Environment.Exit(0); //завершение процесса
+        }
+        
+       
+        public void Start()
+        {
+            Server server = new Server();
+            try
+            {
+
+                Task listenTask = new Task(server.Listen);
+                listenTask.Start(); //старт task
+            }
+            catch (Exception ex)
+            {
+                server.Disconnect();
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

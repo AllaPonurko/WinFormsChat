@@ -16,24 +16,11 @@ namespace FormsServer
         public FormServer()
         {
             InitializeComponent();
-            Start();
+            server.Start();
             //dbChat = new DbChat();
         }
-        static Server server; // сервер
-        static Task listenTask; // потока для прослушивания
-        static void Start()
-        {try
-            {
-                server = new Server();
-                listenTask = new Task(server.Listen);
-                listenTask.Start(); //старт потока
-            }
-            catch (Exception ex)
-            {
-                server.Disconnect();
-                MessageBox.Show(ex.Message);
-            }
-        }
+         Server server=new Server(); // сервер
+       
         public static DbChat dbChat;
     }
 }

@@ -12,7 +12,12 @@ namespace WinFormsChat
 {
     public struct Mess
     {
-        public string mess { get; set; }
+        public static string mess { get; set; }
+        public override string ToString()
+        {
+            return mess;
+        }
+
     }
     public partial class FormChat : Form
     {
@@ -20,7 +25,12 @@ namespace WinFormsChat
         {
             InitializeComponent();
         }
-        public static Mess NewMess;
+        public static Mess MyMess=new Mess();
+        delegate Mess OutMess() ;
+        public static Mess OnChangedMess()
+        {
+            return MyMess;
+        }
         private void FormChat_Load(object sender, EventArgs e)
         {
             txtName.Text = TempUser.Name;
@@ -33,10 +43,11 @@ namespace WinFormsChat
                 return;
             else
             {
-                lstChatOut.Items.Add(txtMessage.Text.ToString()+"\n"+DateTime.Now.ToShortTimeString());
-                NewMess.mess = txtMessage.Text.ToString() + "\n" + DateTime.Now.ToShortTimeString();
+                lstChatOut.Items.Add(txtMessage.Text.ToString()+"\t\n "+DateTime.Now.ToShortTimeString());
+                Mess.mess = txtMessage.Text.ToString() + "\t\n " + DateTime.Now.ToShortTimeString();
                 ChatClient chatClient = new ChatClient();
                 chatClient.Connection(txtName.Text);
+                lstChatIn.Items.Add(Mess.mess);
             }
         }
     }

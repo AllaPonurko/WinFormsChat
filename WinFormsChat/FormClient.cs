@@ -131,7 +131,8 @@ namespace WinFormsChat
                 MessageBox.Show(auth.ToString());
                 FormChat chat = new FormChat();
                 chat.Show();
-                
+                //this.Close();
+
             }
 
         }
