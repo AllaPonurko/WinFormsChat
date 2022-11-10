@@ -47,7 +47,7 @@ namespace WinFormsChat
                 Mess.mess = txtMessage.Text.ToString() + "\t\n " + DateTime.Now.ToShortTimeString();
                 ChatClient chatClient = new ChatClient();
                 chatClient.Connection(txtName.Text);
-                lstChatIn.Items.Add(Mess.mess);
+                
             }
         }
     }

@@ -19,7 +19,6 @@ namespace FormsServer
     public class Client
     {
         public static NewMess newMess;
-        //Socket socket;
         protected internal string Id { get; private set; }
         public Client(TcpClient client, Server serverObject)
         {

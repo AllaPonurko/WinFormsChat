@@ -17,7 +17,7 @@ namespace WinFormsChat
         static NetworkStream stream;
         public ChatClient()
         {
-            client = new TcpClient((AddressFamily)port);
+            client = new TcpClient();
         }
         public void Connection(string name)//соединение и подключение клиента
         {
@@ -28,17 +28,17 @@ namespace WinFormsChat
                 stream = client.GetStream(); // получаем поток
                 string message = userName;
                 byte[] data = Encoding.Unicode.GetBytes(message);
-                stream.Write(data, 0, data.Length);
-
+                stream.WriteAsync(data, 0, data.Length);
+                
                 // запускаем новый поток для получения данных
                 Task receiveTask = new Task(ReceiveMessage);
                 receiveTask.Start(); //старт потока
                 MessageBox.Show("Добро пожаловать, {0}", userName);
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 //запускаем новый поток для отправка данных
-                Task sendTask =new Task( SendMessage);
+                Task sendTask = new Task(SendMessage);
                 sendTask.Start();
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ namespace WinFormsChat
             {
                 string message = FormChat.MyMess.ToString();
                 byte[] data = Encoding.Unicode.GetBytes(message);
-                stream.Write(data, 0, data.Length);
+                stream.WriteAsync(data, 0, data.Length);
             }
         }    
         static void ReceiveMessage()// получение сообщений
