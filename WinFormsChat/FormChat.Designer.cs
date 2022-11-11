@@ -45,6 +45,7 @@ namespace WinFormsChat
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
+            this.btnExit = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -197,11 +198,22 @@ namespace WinFormsChat
             this.txtName.Size = new System.Drawing.Size(142, 23);
             this.txtName.TabIndex = 8;
             // 
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(569, 396);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(90, 23);
+            this.btnExit.TabIndex = 9;
+            this.btnExit.Text = "Выйти";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // FormChat
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.txtName);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -237,5 +249,6 @@ namespace WinFormsChat
         private System.Windows.Forms.Button btnAddContact;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Button btnExit;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -13,90 +14,82 @@ namespace WinFormsChat
         static string userName { get; set; }
         private const string host = "127.0.0.1";
         private const int port = 8888;
-        static TcpClient client;
-        static NetworkStream stream;
+        static TcpClient client=null;
+        StreamReader? Reader = null;
+        StreamWriter? Writer = null;
+        string greetings = $"Приветствую, {userName} ";
         public ChatClient()
         {
             client = new TcpClient();
         }
-        public void Connection(string name)//соединение и подключение клиента
+        
+        public async void Connection(string name)//соединение и подключение клиента
         {
             userName = name;
             try
             {
-                client.ConnectAsync(host, port); //подключение клиента
-                stream = client.GetStream(); // получаем поток
-                string message = userName;
-                byte[] data = Encoding.Unicode.GetBytes(message);
-                stream.WriteAsync(data, 0, data.Length);
-                
+                client.Connect(host, port); //подключение клиента
+                Reader = new StreamReader(client.GetStream());
+                Writer = new StreamWriter(client.GetStream());
+                if (Writer is null || Reader is null) return;
+                MessageBox.Show(greetings);
                 // запускаем новый поток для получения данных
-                Task receiveTask = new Task(ReceiveMessage);
-                receiveTask.Start(); //старт потока
-                MessageBox.Show("Добро пожаловать, {0}", userName);
-                //Thread.Sleep(1000);
-                //запускаем новый поток для отправка данных
-                Task sendTask = new Task(SendMessage);
-                sendTask.Start();
-                //Thread.Sleep(1000);
+                await Task.Run(() => ReceiveMessageAsync(Reader));
+                // запускаем ввод сообщений
+                await SendMessageAsync(Writer);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
             finally
-            { 
-                Disconnect();
+            {
+                Writer?.Close();
+                Reader?.Close();
             }
         }
-        
-       public static void SendMessage()// отправка сообщений
+
+        async Task SendMessageAsync(StreamWriter writer)
         {
+            // сначала отправляем имя
+            await writer.WriteLineAsync(userName);
+            await writer.FlushAsync();
+            
+
             while (true)
             {
-                string message = FormChat.MyMess.ToString();
-                byte[] data = Encoding.Unicode.GetBytes(message);
-                stream.WriteAsync(data, 0, data.Length);
+                string? message = Console.ReadLine();
+                await writer.WriteLineAsync(message);
+                await writer.FlushAsync();
             }
-        }    
-        static void ReceiveMessage()// получение сообщений
+        }
+        // получение сообщений
+        async Task ReceiveMessageAsync(StreamReader reader)
         {
             while (true)
             {
                 try
                 {
-                    byte[] data = new byte[64]; // буфер для получаемых данных
-                    StringBuilder builder = new StringBuilder();
-                    int bytes = 0;
-                    do
-                    {
-                        bytes = stream.Read(data, 0, data.Length);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    }
-                    while (stream.DataAvailable);
-
-                    string message = builder.ToString();
-                    Mess.mess=message;
-                    //вывод сообщения
-                    
+                    // считываем ответ в виде строки
+                    string? message = await reader.ReadLineAsync();
+                    // если пустой ответ, ничего не выводим 
+                    if (string.IsNullOrEmpty(message)) continue;
+                    FormChat.MyMess.mess =Print(message);//вывод сообщения
+                    //FormChat.ChangeMess+= Print(message);
                 }
                 catch
                 {
-                    MessageBox.Show("Подключение прервано!"); //соединение было прервано
-                    Disconnect();
+                    break;
                 }
             }
         }
 
-        static void Disconnect()
+        public string Print(string message)
         {
-            if (stream != null)
-                stream.Close();//отключение потока
-            if (client != null)
-                client.Close();//отключение клиента
-            //Environment.Exit(0); //завершение процесса
+          return  message;
         }
-    
+
+
 
     }
 }

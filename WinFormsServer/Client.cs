@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using FormsServer.Entities;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace FormsServer
 {public struct NewMess
@@ -19,66 +20,68 @@ namespace FormsServer
     public class Client
     {
         public static NewMess newMess;
-        protected internal string Id { get; private set; }
+        protected internal string Id { get; }= Guid.NewGuid().ToString();
+        protected internal StreamWriter Writer { get; }
+        protected internal StreamReader Reader { get; }
         public Client(TcpClient client, Server serverObject)
         {
-            Id = Guid.NewGuid().ToString();
+            
             tcpClient = client;
             server = serverObject;
-            server.AddConnection(this);
-            NewUser = new User();
+            var stream = client.GetStream();
+            Reader = new StreamReader(stream);
+            Writer = new StreamWriter(stream);
+            NewUser = new User(); 
         }
         public User NewUser { get; set; }
-        TcpClient tcpClient=new TcpClient();
+        TcpClient tcpClient;
         Server server;
-        public void Process()
+        protected internal NetworkStream Stream{ get; private set; }
+        public async Task ProcessAsync()
         {
             try
             {
-                Stream = tcpClient.GetStream();
                 // получаем имя пользователя
-                string message = GetMessage();
-                NewUser.Login = message;
-
-                message = NewUser.Login + " вошел в чат";
+                string? userName = await Reader.ReadLineAsync();
+                string? message = $"{userName} вошел в чат";
                 // посылаем сообщение о входе в чат всем подключенным пользователям
-                server.BroadcastMessage(message, this.Id);
-                MessageBox.Show(message);
+                await server.BroadcastMessageAsync(message, Id);
+                Console.WriteLine(message);
                 // в бесконечном цикле получаем сообщения от клиента
                 while (true)
                 {
                     try
                     {
-                        message = GetMessage();
-                        message = String.Format("{0}: {1}", NewUser.Login, message);
-                        server.BroadcastMessage(message, this.Id);
+                        message = await Reader.ReadLineAsync();
+                        if (message == null) continue;
+                        message = $"{userName}: {message}";
+                        Console.WriteLine(message);
+                        await server.BroadcastMessageAsync(message, Id);
                     }
                     catch
                     {
-                        message = String.Format("{0}: покинул чат", NewUser.Login);
-                        newMess.mess= message;
-                        server.BroadcastMessage(message, this.Id);
+                        message = $"{userName} покинул чат";
+                        Console.WriteLine(message);
+                        await server.BroadcastMessageAsync(message, Id);
                         break;
                     }
                 }
             }
             catch (Exception e)
             {
-               MessageBox.Show(e.Message);
+                Console.WriteLine(e.Message);
             }
             finally
             {
                 // в случае выхода из цикла закрываем ресурсы
-                server.RemoveConnection(this.Id);
-                Close();
+                server.RemoveConnection(Id);
             }
         }
         protected internal void Close()
         {
-            if (Stream != null)// если есть что закрыть
-                Stream.Close();//закрываем
-            if (tcpClient != null)
-                tcpClient.Close();
+            Writer.Close();
+            Reader.Close();
+            tcpClient.Close();
         }
         private string GetMessage()
         {
@@ -94,7 +97,7 @@ namespace FormsServer
 
             return builder.ToString();
         }
-        protected internal NetworkStream Stream { get; private set; }
+        
         ///// <summary>
         ///// когда отправка завершена
         ///// </summary>

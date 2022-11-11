@@ -36,6 +36,7 @@ namespace WinFormsChat
             this.btnEnter = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.btnRegister = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -69,6 +70,8 @@ namespace WinFormsChat
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(100, 23);
             this.txtPassword.TabIndex = 3;
+            this.txtPassword.UseSystemPasswordChar = true;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             // 
             // btnEnter
             // 
@@ -98,11 +101,22 @@ namespace WinFormsChat
             this.btnRegister.Text = "Зарегистрироваться";
             this.btnRegister.UseVisualStyleBackColor = true;
             // 
-            // Form1
+            // btnExit
+            // 
+            this.btnExit.Location = new System.Drawing.Point(26, 413);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(140, 23);
+            this.btnExit.TabIndex = 7;
+            this.btnExit.Text = "Выйти";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // FormClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnRegister);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.btnEnter);
@@ -110,7 +124,7 @@ namespace WinFormsChat
             this.Controls.Add(this.txtLogin);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "Form1";
+            this.Name = "FormClient";
             this.Text = "Форма клиента";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -126,6 +140,7 @@ namespace WinFormsChat
         private System.Windows.Forms.Button btnEnter;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnRegister;
+        private System.Windows.Forms.Button btnExit;
     }
 }
 

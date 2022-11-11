@@ -129,12 +129,21 @@ namespace WinFormsChat
                 //MyState myState = new MyState();
                 //myState.AsyncConnect();
                 MessageBox.Show(auth.ToString());
+              
                 FormChat chat = new FormChat();
                 chat.Show();
-                //this.Close();
-
             }
 
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }

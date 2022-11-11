@@ -12,29 +12,31 @@ namespace WinFormsChat
 {
     public struct Mess
     {
-        public static string mess { get; set; }
-        public override string ToString()
-        {
-            return mess;
-        }
-
+        public  string mess { get; set; }
+  
     }
     public partial class FormChat : Form
     {
         public FormChat()
         {
             InitializeComponent();
+            //ChangeMess += AddListBox;
         }
-        public static Mess MyMess=new Mess();
-        delegate Mess OutMess() ;
-        public static Mess OnChangedMess()
+        public static Mess MyMess = new Mess();
+
+        public delegate string OnChangedMess(string msg);
+        public static event OnChangedMess ChangeMess;
+
+        public void AddListBox(string mess)
         {
-            return MyMess;
+            lstChatOut.Items.Add(mess);
         }
+        
         private void FormChat_Load(object sender, EventArgs e)
         {
             txtName.Text = TempUser.Name;
             txtName.Enabled = false;
+            
         }
 
         private void btnEnter_Click(object sender, EventArgs e)
@@ -43,12 +45,20 @@ namespace WinFormsChat
                 return;
             else
             {
-                lstChatOut.Items.Add(txtMessage.Text.ToString()+"\t\n "+DateTime.Now.ToShortTimeString());
-                Mess.mess = txtMessage.Text.ToString() + "\t\n " + DateTime.Now.ToShortTimeString();
                 ChatClient chatClient = new ChatClient();
-                chatClient.Connection(txtName.Text);
                 
+                MyMess.mess = txtMessage.Text.ToString() + "\r\t\n " + DateTime.Now.ToShortTimeString();
+                lstChatOut.Items.Add(MyMess.mess);
+                chatClient.Connection(txtName.Text);
+                //AddListBox(MyMess.mess);
+                txtMessage.Text = null;
             }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            Close();
+
         }
     }
 }

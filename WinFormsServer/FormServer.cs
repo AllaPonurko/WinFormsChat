@@ -16,11 +16,12 @@ namespace FormsServer
         public FormServer()
         {
             InitializeComponent();
-            server.Start();
+            server.StartServer();
             //dbChat = new DbChat();
         }
-         Server server=new Server(); // сервер
-       
+        
+       Server server=new Server(); // сервер
+        
         public static DbChat dbChat;
     }
 }

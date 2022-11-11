@@ -49,13 +49,20 @@ namespace FormsServer
 
         //    }
         static TcpListener tcpListener; // сервер для прослушивания
-        List<Client> clients = new List<Client>(); // все подключения
+        List<Client> clients; // все подключения
+        const int port = 8888;
+        static TcpClient tcpClient;
         
-        protected internal void AddConnection(Client clientObject)
+        public Server()
         {
-            clients.Add(clientObject);
+            tcpClient = new TcpClient();
+            clients = new List<Client>();
         }
-        protected internal void RemoveConnection(string id)
+        protected internal void AddConnection(Client client)//добавление клиента
+        {
+            clients.Add(client);
+        }
+        protected internal void RemoveConnection(string id)//удаление клиента
         {
             // получаем по id закрытое подключение
             Client client = clients.FirstOrDefault(c => c.Id == id);
@@ -63,22 +70,23 @@ namespace FormsServer
             if (client != null)
                 clients.Remove(client);
         }
-        
-        protected internal void Listen()// прослушивание входящих подключений
+
+        protected internal async Task ListenAsync()// прослушивание входящих подключений
         {
             try
             {
-                tcpListener = new TcpListener(IPAddress.Any, 8888);
+                tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
                 tcpListener.Start();
                 MessageBox.Show("Сервер запущен. Ожидание подключений...");
 
                 while (true)
                 {
-                    TcpClient tcpClient = tcpListener.AcceptTcpClient();
+                   tcpClient =await tcpListener.AcceptTcpClientAsync();
 
-                    Client clientObject = new Client(tcpClient, this);
-                    Task clientTask = new Task(clientObject.Process);
-                    clientTask.Start();
+                    Client client = new Client(tcpClient, this);
+                    clients.Add(client);
+                   await Task.Run(client.ProcessAsync);
+                    
                 }
             }
             catch (Exception ex)
@@ -89,44 +97,29 @@ namespace FormsServer
         }
 
         // трансляция сообщения подключенным клиентам
-        protected internal void BroadcastMessage(string message, string id)
+        protected internal async Task BroadcastMessageAsync(string message, string id)
         {
-            byte[] data = Encoding.Unicode.GetBytes(message);
-            for (int i = 0; i < clients.Count; i++)
+            foreach (var client in clients)
             {
-                if (clients[i].Id != id) // если id клиента не равно id отправляющего
+                if (client.Id != id) // если id клиента не равно id отправителя
                 {
-                    clients[i].Stream.Write(data, 0, data.Length); //передача данных
+                    await client.Writer.WriteLineAsync(message); //передача данных
+                    await client.Writer.FlushAsync();
                 }
             }
         }
-        // отключение всех клиентов
-        protected internal void Disconnect()
+
+        protected internal void Disconnect()// отключение всех клиентов
         {
+            foreach (var client in clients)
+            {
+                client.Close(); //отключение клиента
+            }
             tcpListener.Stop(); //остановка сервера
-
-            for (int i = 0; i < clients.Count; i++)
-            {
-                clients[i].Close(); //отключение клиента
-            }
-            Environment.Exit(0); //завершение процесса
         }
-        
-       
-        public void Start()
+        async public void StartServer()
         {
-            Server server = new Server();
-            try
-            {
-
-                Task listenTask = new Task(server.Listen);
-                listenTask.Start(); //старт task
-            }
-            catch (Exception ex)
-            {
-                server.Disconnect();
-                MessageBox.Show(ex.Message);
-            }
+            await ListenAsync(); // запускаем сервер
         }
     }
 }
