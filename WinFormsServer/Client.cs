@@ -34,6 +34,7 @@ namespace FormsServer
             NewUser = new User(); 
         }
         public User NewUser { get; set; }
+        
         TcpClient tcpClient;
         Server server;
         protected internal NetworkStream Stream{ get; private set; }
@@ -43,10 +44,11 @@ namespace FormsServer
             {
                 // получаем имя пользователя
                 string? userName = await Reader.ReadLineAsync();
+                
                 string? message = $"{userName} вошел в чат";
                 // посылаем сообщение о входе в чат всем подключенным пользователям
                 await server.BroadcastMessageAsync(message, Id);
-                Console.WriteLine(message);
+                MessageBox.Show(message);
                 // в бесконечном цикле получаем сообщения от клиента
                 while (true)
                 {
@@ -55,13 +57,11 @@ namespace FormsServer
                         message = await Reader.ReadLineAsync();
                         if (message == null) continue;
                         message = $"{userName}: {message}";
-                        Console.WriteLine(message);
                         await server.BroadcastMessageAsync(message, Id);
                     }
                     catch
                     {
                         message = $"{userName} покинул чат";
-                        Console.WriteLine(message);
                         await server.BroadcastMessageAsync(message, Id);
                         break;
                     }
@@ -83,20 +83,20 @@ namespace FormsServer
             Reader.Close();
             tcpClient.Close();
         }
-        private string GetMessage()
-        {
-            byte[] data = new byte[64]; // буфер для получаемых данных
-            StringBuilder builder = new StringBuilder();
-            int bytes = 0;
-            do
-            {
-                bytes = Stream.Read(data, 0, data.Length);
-                builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-            }
-            while (Stream.DataAvailable);
+        //private string GetMessage()
+        //{
+        //    byte[] data = new byte[64]; // буфер для получаемых данных
+        //    StringBuilder builder = new StringBuilder();
+        //    int bytes = 0;
+        //    do
+        //    {
+        //        bytes = Stream.Read(data, 0, data.Length);
+        //        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+        //    }
+        //    while (Stream.DataAvailable);
 
-            return builder.ToString();
-        }
+        //    return builder.ToString();
+        //}
         
         ///// <summary>
         ///// когда отправка завершена
@@ -160,13 +160,13 @@ namespace FormsServer
         //    }
 
         //}
-        public List<MyMessage> GetMessages(User CurrentUser)
-        {
-            List<MyMessage> messages = new List<MyMessage>();
-            var m = (from msg in FormsServer.FormServer.dbChat.Messages where
-                     CurrentUser.Id == msg.UserId select msg).ToList();
-            return messages;
-        }
+        //public List<string> GetMessages(User CurrentUser)
+        //{
+        //    //List<string> messages = new List<string>();
+        //    //var m = (from msg in FormsServer.FormServer.dbChat.Messages where
+        //    //         CurrentUser.Id == msg.UserId select msg).ToList();
+        //    //return messages;
+        //}
 
         ///// <summary>
         ///// Процесс работы с клиентом

@@ -50,17 +50,19 @@ namespace FormsServer
         //    }
         static TcpListener tcpListener; // сервер для прослушивания
         List<Client> clients; // все подключения
-        const int port = 8888;
+        const int port = 4000;
         static TcpClient tcpClient;
         
         public Server()
         {
+            
             tcpClient = new TcpClient();
             clients = new List<Client>();
         }
         protected internal void AddConnection(Client client)//добавление клиента
         {
             clients.Add(client);
+            
         }
         protected internal void RemoveConnection(string id)//удаление клиента
         {
@@ -82,11 +84,12 @@ namespace FormsServer
                 while (true)
                 {
                    tcpClient =await tcpListener.AcceptTcpClientAsync();
-
                     Client client = new Client(tcpClient, this);
                     clients.Add(client);
-                   await Task.Run(client.ProcessAsync);
-                    
+                    MessageBox.Show("Подключен новый клиент");
+                    FormServer.temp.Name = client.NewUser.Login;
+                    FormServer.temp.flag = true;
+                    await Task.Run(client.ProcessAsync);                
                 }
             }
             catch (Exception ex)

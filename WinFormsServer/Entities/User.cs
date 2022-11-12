@@ -15,12 +15,12 @@ namespace FormsServer.Entities
         public Guid Id { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
-        public ICollection<MyMessage> Messages { get; set; }
+        public ICollection<string> Messages { get; set; }
         public Guid GroupId;
-        public Guid ChatId;
+        
         public User()
         {
-            Messages = new List<MyMessage>();
+            Messages = new List<string>();
         }
         public override string ToString()
         {

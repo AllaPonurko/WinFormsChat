@@ -129,7 +129,7 @@ namespace WinFormsChat
                 //MyState myState = new MyState();
                 //myState.AsyncConnect();
                 MessageBox.Show(auth.ToString());
-              
+                FormClient.ActiveForm. Visible = false;
                 FormChat chat = new FormChat();
                 chat.Show();
             }

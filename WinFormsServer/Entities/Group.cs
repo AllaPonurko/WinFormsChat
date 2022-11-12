@@ -15,7 +15,7 @@ namespace FormsServer.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public ICollection<User> Users;
-        public Guid ChatId { get; set; }
+      
         public Group(string name)
         {
             Name = name;
