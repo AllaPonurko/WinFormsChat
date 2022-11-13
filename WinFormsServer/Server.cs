@@ -86,7 +86,7 @@ namespace FormsServer
                    tcpClient =await tcpListener.AcceptTcpClientAsync();
                     Client client = new Client(tcpClient, this);
                     clients.Add(client);
-                    MessageBox.Show("Подключен новый клиент");
+                    MessageBox.Show("Подключен новый клиент "+client.Id);
                     FormServer.temp.Name = client.NewUser.Login;
                     FormServer.temp.flag = true;
                     await Task.Run(client.ProcessAsync);                
@@ -108,6 +108,7 @@ namespace FormsServer
                 {
                     await client.Writer.WriteLineAsync(message); //передача данных
                     await client.Writer.FlushAsync();
+                    MessageBox.Show("Сообщение передано");
                 }
             }
         }

@@ -56,12 +56,12 @@ namespace WinFormsChat
             if (txtMessage.Text.Length == 0)
                 return;
             else
-            {          
-                lstChatOut.Items.Add(txtMessage.Text.ToString() + "\r\t\n " + 
-                    DateTime.Now.ToShortTimeString());
+            {
+                lstChatOut.Items.Add(txtMessage.Text.ToString());
+                lstChatOut.Items.Add( DateTime.Now.ToLongTimeString());
                 MyMess.mess = txtMessage.Text.ToString() + "\r\t\n " +
-                    DateTime.Now.ToShortTimeString();
-               await chatClient.SendMessageAsync(MyMess.mess);
+                DateTime.Now.ToLongTimeString();
+                await chatClient.SendMessageAsync(MyMess.mess);
                 txtMessage.Text = null;
             }
         }
