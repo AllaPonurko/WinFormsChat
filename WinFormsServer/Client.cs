@@ -40,41 +40,95 @@ namespace FormsServer
         protected internal NetworkStream Stream{ get; private set; }
         public async Task ProcessAsync()
         {
-            try
-            {
-                // получаем имя пользователя
-                string? userName = await Reader.ReadLineAsync();
-                
-                string? message = $"{userName} вошел в чат";
-                // посылаем сообщение о входе в чат всем подключенным пользователям
-                await server.BroadcastMessageAsync(message, Id);
-                MessageBox.Show(message);
-                // в бесконечном цикле получаем сообщения от клиента
-                while (true)
+            while (true)
+            { 
+                try
                 {
-                    try
-                    {
-                        message = await Reader.ReadLineAsync();
-                        if (message == null) continue;
-                        message = $"{userName}: {message}";
+                    //byte[] buffer = new byte[1024]; // буфер для получаемых данных
+
+                    //do
+                    //{
+                    //    int bytes = Stream.Read(buffer, 0, buffer.Length);
+                    //}
+                    //while (Stream.DataAvailable);
+
+
+                    //BinaryFormatter formatter = new BinaryFormatter();
+                    //Request request;
+
+                    //using (MemoryStream ms = new MemoryStream(buffer))
+                    //{
+                    //    try
+                    //    {
+                    //        request = (Request)formatter.Deserialize(ms);
+                    //        switch (request.Command)
+                    //        {
+                    //            case Lib.Enum.RequestCommand.Auth:
+                    //                Auth auth = (Auth)request.Body;
+                    //                MessageBox.Show(auth.Email);
+
+                    //                break;
+                    //            case Lib.Enum.RequestCommand.GET:
+                    //                List<string> myMessages = new List<string>();
+                    //                myMessages = (List<string>)request.Body;
+                    //                break;
+                    //            case Lib.Enum.RequestCommand.POST:
+
+
+                    //                break;
+                    //            case Lib.Enum.RequestCommand.PUT:
+
+                    //                break;
+                    //            case Lib.Enum.RequestCommand.DELETE:
+
+                    //                break;
+
+                    //            default:
+                    //                MessageBox.Show(" No Command ");
+                    //                break;
+                    //        }
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        MessageBox.Show(ex.Message);
+                    //    }
+
+                    //получаем имя пользователя
+                        NewUser.Login = await Reader.ReadLineAsync();
+                        
+                        string? message = $"{NewUser.Login} вошел в чат";
+                        // посылаем сообщение о входе в чат всем подключенным пользователям
                         await server.BroadcastMessageAsync(message, Id);
-                    }
-                    catch
-                    {
-                        message = $"{userName} покинул чат";
-                        await server.BroadcastMessageAsync(message, Id);
-                        break;
-                    }
+                        MessageBox.Show(message);
+                        // в бесконечном цикле получаем сообщения от клиента
+                        while (true)
+                        {
+                            try
+                            {
+                                message = await Reader.ReadLineAsync();
+                                if (message == null) continue;
+                                message = $"{NewUser.Login}: {message}";
+                                await server.BroadcastMessageAsync(message, Id);
+                            }
+                            catch
+                            {
+                                message = $"{NewUser.Login} покинул чат";
+                                await server.BroadcastMessageAsync(message, Id);
+                                break;
+                            }
+                        }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            finally
-            {
-                // в случае выхода из цикла закрываем ресурсы
-                server.RemoveConnection(Id);
+                //}
+
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally
+                {
+                    // в случае выхода из цикла закрываем ресурсы
+                    server.RemoveConnection(Id);
+                }
             }
         }
         protected internal void Close()
@@ -83,21 +137,30 @@ namespace FormsServer
             Reader.Close();
             tcpClient.Close();
         }
-        //private string GetMessage()
-        //{
-        //    byte[] data = new byte[64]; // буфер для получаемых данных
-        //    StringBuilder builder = new StringBuilder();
-        //    int bytes = 0;
-        //    do
-        //    {
-        //        bytes = Stream.Read(data, 0, data.Length);
-        //        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-        //    }
-        //    while (Stream.DataAvailable);
+            private string GetMessage()
+            {
+                byte[] data = new byte[64]; // буфер для получаемых данных
+                StringBuilder builder = new StringBuilder();
+                int bytes = 0;
+                do
+                {
+                    bytes = Stream.Read(data, 0, data.Length);
+                    builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                }
+                while (Stream.DataAvailable);
 
-        //    return builder.ToString();
-        //}
-        
+                return builder.ToString();
+            }
+//        public List<string> GetMessages(User CurrentUser)
+//        {
+//            List<string> messages = new List<string>();
+//            var m = (from msg in FormsServer.FormServer.dbChat.Messages
+//                     where
+//CurrentUser.Id == msg.UserId
+//                     select msg).ToList();
+//            return messages;
+//        }
+
         ///// <summary>
         ///// когда отправка завершена
         ///// </summary>
@@ -140,7 +203,7 @@ namespace FormsServer
         //                    case Lib.Enum.RequestCommand.Create:
         //                        Auth auth1 = new Auth();
         //                        User newUser = new User(auth1.Email,auth1.Pass);
-                                
+
         //                        break;
         //                    case Lib.Enum.RequestCommand.Update:
 

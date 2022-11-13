@@ -25,9 +25,11 @@ namespace WinFormsChat
             InitializeComponent();      
             ChangeMess += AddListBox;
             chatClient = new ChatClient();
-            chatClient.Connection(MyMess.mess);
-
+            chatClient.Connection();
         }
+
+       
+
         public static Mess MyMess = new Mess();
         ChatClient chatClient;
         public delegate void OnChangedMess(string msg);
@@ -48,7 +50,7 @@ namespace WinFormsChat
 
         }
         
-        private void btnEnter_Click(object sender, EventArgs e)
+        private async void btnEnter_Click(object sender, EventArgs e)
         { 
             
             if (txtMessage.Text.Length == 0)
@@ -59,6 +61,7 @@ namespace WinFormsChat
                     DateTime.Now.ToShortTimeString());
                 MyMess.mess = txtMessage.Text.ToString() + "\r\t\n " +
                     DateTime.Now.ToShortTimeString();
+               await chatClient.SendMessageAsync(MyMess.mess);
                 txtMessage.Text = null;
             }
         }
@@ -83,18 +86,18 @@ namespace WinFormsChat
                
             }
 
-            public async void Connection(string mess)//соединение и подключение клиента
+            public async void Connection()//соединение и подключение клиента
             {
                 try
                 {
-                    client.Connect(host, port); //подключение клиента
-                    Reader = new StreamReader(client.GetStream());
-                    Writer = new StreamWriter(client.GetStream());
-                    if (Writer is null || Reader is null) return;
+                   await client.ConnectAsync(host, port); //подключение клиента
+                    //Reader = new StreamReader(client.GetStream());
+                    //Writer = new StreamWriter(client.GetStream());
+                    //if (Writer is null || Reader is null) return;
                     // запускаем новый поток для получения данных
-                    await Task.Run(() => ReceiveMessageAsync(Reader));
-                    // запускаем ввод сообщений
-                    await SendMessageAsync(Writer,mess);
+                    await Task.Run(() => ReceiveMessageAsync());
+                    //// запускаем ввод сообщений
+                    //await SendMessageAsync(Writer,mess);
                 }
                 catch (Exception ex)
                 {
@@ -107,26 +110,42 @@ namespace WinFormsChat
                 }
             }
 
-            async Task SendMessageAsync(StreamWriter writer,string msg)
+           public async Task SendMessageAsync(/*StreamWriter writer,*/string msg)
             {
-                // сначала отправляем имя
-                await writer.WriteLineAsync(userName);
-                await writer.FlushAsync();
-                while (true)
+                try
                 {
-                    await writer.WriteLineAsync(msg);
-                    await writer.FlushAsync();
+                    Writer = new StreamWriter(client.GetStream());
+                    // сначала отправляем имя
+                    await Writer.WriteLineAsync(userName);
+                    await Writer.FlushAsync();
+                    while (true)
+                    {
+                        await Writer.WriteLineAsync(msg);
+                        await Writer.FlushAsync();
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    Writer?.Close();
+                    //Reader?.Close();
                 }
             }
             // получение сообщений
-            async Task ReceiveMessageAsync(StreamReader reader)
+            async Task ReceiveMessageAsync(/*StreamReader reader*/)
             {
+                Reader = new StreamReader(client.GetStream());
+                //Writer = new StreamWriter(client.GetStream());
                 while (true)
                 {
                     try
                     {
                         // считываем ответ в виде строки
-                        string? message = await reader.ReadLineAsync();
+                        string? message = await Reader.ReadLineAsync();
                         ChangeMess?.Invoke(message);
                         // если пустой ответ, ничего не выводим 
                         if (string.IsNullOrEmpty(message)) continue;
@@ -137,6 +156,11 @@ namespace WinFormsChat
                     {
 
                         break;
+                    }
+                    finally
+                    {
+                        //Writer?.Close();
+                        Reader?.Close();
                     }
                 }
             }

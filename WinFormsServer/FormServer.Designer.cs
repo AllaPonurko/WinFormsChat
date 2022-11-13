@@ -51,7 +51,7 @@ namespace FormsServer
             this.txtAdress.Name = "txtAdress";
             this.txtAdress.Size = new System.Drawing.Size(100, 23);
             this.txtAdress.TabIndex = 1;
-            this.txtAdress.Text = "127.0.0.1";
+            this.txtAdress.Text = "198.168.01.200";
             // 
             // label2
             // 

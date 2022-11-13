@@ -7,9 +7,9 @@ namespace Lib.Enum
     public enum RequestCommand
     {
         Auth,
-        Create,
-        Read,
-        Update,
-        Delete
+        PUT,
+        GET,
+        POST,
+        DELETE
     }
 }
