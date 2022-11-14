@@ -23,6 +23,10 @@ namespace FormsServer
             flag = false;
         }
     }
+    public class TempMessage
+    {
+        public static string TempMess;
+    }
     public partial class FormServer : Form
     { 
         internal delegate void  OnChangedConnect(string str);
@@ -55,7 +59,7 @@ namespace FormsServer
         public static Temp temp = new Temp();
         public void AddListConnection(string str)
         {
-            lstConnection.Items.Add(str + " is connected \n"+DateTime.Now.ToShortTimeString());
+            lstConnection.Items.Add(DateTime.Now.ToShortTimeString()+" "+str + " is connected \n");
         }
         Server server; // сервер
         public static DbChat dbChat;
@@ -65,9 +69,9 @@ namespace FormsServer
         }
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (temp.flag == true)
+            if (TempMessage.TempMess!=null)
             {
-                ChangedConnect?.Invoke(temp.Name);
+                ChangedConnect?.Invoke(TempMessage.TempMess);
                 
             }
         }

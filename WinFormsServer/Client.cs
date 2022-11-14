@@ -34,7 +34,7 @@ namespace FormsServer
             NewUser = new User(); 
         }
         public User NewUser { get; set; }
-        
+        public static TempMessage tempMessage = new TempMessage();
         TcpClient tcpClient;
         Server server;
         protected internal NetworkStream Stream{ get; private set; }
@@ -97,6 +97,8 @@ namespace FormsServer
                         NewUser.Login = await Reader.ReadLineAsync();
                         
                         string? message = $"{NewUser.Login} вошел в чат";
+                        TempMessage.TempMess = message;
+                    
                         // посылаем сообщение о входе в чат всем подключенным пользователям
                         await server.BroadcastMessageAsync(message, Id);
                         MessageBox.Show(message);
@@ -137,19 +139,21 @@ namespace FormsServer
             Reader.Close();
             tcpClient.Close();
         }
-            private string GetMessage()
+            private void GetMessage(string str)
             {
-                byte[] data = new byte[64]; // буфер для получаемых данных
-                StringBuilder builder = new StringBuilder();
-                int bytes = 0;
-                do
-                {
-                    bytes = Stream.Read(data, 0, data.Length);
-                    builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                }
-                while (Stream.DataAvailable);
+            List<string> vs = new List<string>();
+            vs.Add(str);
+                //byte[] data = new byte[64]; // буфер для получаемых данных
+                //StringBuilder builder = new StringBuilder();
+                //int bytes = 0;
+                //do
+                //{
+                //    bytes = Stream.Read(data, 0, data.Length);
+                //    builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+                //}
+                //while (Stream.DataAvailable);
 
-                return builder.ToString();
+                //return builder.ToString();
             }
 //        public List<string> GetMessages(User CurrentUser)
 //        {
