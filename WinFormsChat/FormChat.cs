@@ -69,7 +69,6 @@ namespace WinFormsChat
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            //this.Close();
             FormClient.ActiveForm.Close();
 
         }
@@ -134,7 +133,7 @@ namespace WinFormsChat
                 }
                 finally
                 {
-                    Writer?.Close();
+                    //Writer?.Close();
                     //Reader?.Close();
                 }
             }
@@ -164,7 +163,7 @@ namespace WinFormsChat
                     finally
                     {
                         //Writer?.Close();
-                        Reader?.Close();
+                        //Reader?.Close();
                     }
                 }
             }

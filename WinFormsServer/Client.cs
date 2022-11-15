@@ -94,28 +94,27 @@ namespace FormsServer
                     //    }
 
                     //получаем имя пользователя
-                        NewUser.Login = await Reader.ReadLineAsync();
+                     NewUser.Login = await Reader.ReadLineAsync();
+
+                    TempMessage.TempMess = $"{NewUser.Login} вошел в чат";
+                    MessageBox.Show(TempMessage.TempMess);
+                    // посылаем сообщение о входе в чат всем подключенным пользователям
+                    await server.BroadcastMessageAsync(TempMessage.TempMess, Id);
                         
-                        string? message = $"{NewUser.Login} вошел в чат";
-                        TempMessage.TempMess = message;
-                    
-                        // посылаем сообщение о входе в чат всем подключенным пользователям
-                        await server.BroadcastMessageAsync(message, Id);
-                        MessageBox.Show(message);
                         // в бесконечном цикле получаем сообщения от клиента
                         while (true)
                         {
                             try
                             {
-                                message = await Reader.ReadLineAsync();
-                                if (message == null) continue;
-                                message = $"{NewUser.Login}: {message}";
-                                await server.BroadcastMessageAsync(message, Id);
+                            TempMessage.TempMess = await Reader.ReadLineAsync();
+                            if (TempMessage.TempMess == null) continue;
+                            string SendMessage = $"{NewUser.Login}: {TempMessage.TempMess}";
+                             await server.BroadcastMessageAsync(TempMessage.TempMess, Id);
                             }
                             catch
                             {
-                                message = $"{NewUser.Login} покинул чат";
-                                await server.BroadcastMessageAsync(message, Id);
+                            TempMessage.TempMess = $"{NewUser.Login} покинул чат";
+                            await server.BroadcastMessageAsync(TempMessage.TempMess, Id);
                                 break;
                             }
                         }
@@ -124,7 +123,7 @@ namespace FormsServer
 
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    MessageBox.Show(e.Message);
                 }
                 finally
                 {
