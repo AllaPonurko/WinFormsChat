@@ -82,6 +82,7 @@ namespace WinFormsChat
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnExit);
             this.panel1.Controls.Add(this.btnDeleteMessage);
             this.panel1.Controls.Add(this.lstChatIn);
             this.panel1.Controls.Add(this.lstChatOut);
@@ -208,7 +209,7 @@ namespace WinFormsChat
             // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(569, 396);
+            this.btnExit.Location = new System.Drawing.Point(348, 298);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(90, 23);
             this.btnExit.TabIndex = 9;
@@ -221,8 +222,7 @@ namespace WinFormsChat
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnExit);
+            this.ClientSize = new System.Drawing.Size(657, 349);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel2);

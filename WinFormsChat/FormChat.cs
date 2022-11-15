@@ -25,7 +25,7 @@ namespace WinFormsChat
             InitializeComponent();      
             ChangeMess += AddListBox;
             chatClient = new ChatClient();
-            chatClient.Connection();
+            
         }
 
        
@@ -45,9 +45,9 @@ namespace WinFormsChat
         {
             txtName.Text = TempUser.Name;
             txtName.Enabled = false;
-
-            MessageBox.Show($"Приветствую, {txtName.Text} ");
-
+            chatClient.userName = TempUser.Name;
+            MessageBox.Show($"Приветствую, {TempUser.Name} ");
+          
         }
         
         private async void btnEnter_Click(object sender, EventArgs e)
@@ -58,17 +58,19 @@ namespace WinFormsChat
             else
             {
                 lstChatOut.Items.Add(txtMessage.Text.ToString());
-                lstChatOut.Items.Add( DateTime.Now.ToLongTimeString());
-                MyMess.mess = txtMessage.Text.ToString() + "\r\t\n " +
-                DateTime.Now.ToLongTimeString();
-                await chatClient.SendMessageAsync(MyMess.mess);
+                lstChatIn.Items.Add( DateTime.Now.ToLongTimeString());
+                MyMess.mess = DateTime.Now.ToLongTimeString()+" "+
+                    txtMessage.Text.ToString() + "\r\t\n ";
                 txtMessage.Text = null;
+                await chatClient.Connection(MyMess.mess);
+                
             }
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            Close();
+            //this.Close();
+            FormClient.ActiveForm.Close();
 
         }
         public class ChatClient
@@ -83,21 +85,23 @@ namespace WinFormsChat
             public ChatClient()
             {
                 client = new TcpClient();
-               
+                client.ConnectAsync(host, port);
             }
 
-            public async void Connection()//соединение и подключение клиента
+            public async Task Connection(string msg)//соединение и подключение клиента
             {
                 try
                 {
-                   await client.ConnectAsync(host, port); //подключение клиента
-                    //Reader = new StreamReader(client.GetStream());
-                    //Writer = new StreamWriter(client.GetStream());
-                    //if (Writer is null || Reader is null) return;
+                   //await client.ConnectAsync(host, port); //подключение клиента
+                    Reader = new StreamReader(client.GetStream());
+                    Writer = new StreamWriter(client.GetStream());
+                    if (Writer is null || Reader is null) return;
                     // запускаем новый поток для получения данных
                     await Task.Run(() => ReceiveMessageAsync());
-                    //// запускаем ввод сообщений
-                    //await SendMessageAsync(Writer,mess);
+                    ChangeMess?.Invoke(msg);
+                    // запускаем ввод сообщений
+                    if (msg == null) return;
+                    await SendMessageAsync(Writer, msg);
                 }
                 catch (Exception ex)
                 {
@@ -110,11 +114,10 @@ namespace WinFormsChat
                 }
             }
 
-           public async Task SendMessageAsync(/*StreamWriter writer,*/string msg)
+           public async Task SendMessageAsync(StreamWriter writer,string msg)
             {
                 try
-                {
-                    Writer = new StreamWriter(client.GetStream());
+                {  
                     // сначала отправляем имя
                     await Writer.WriteLineAsync(userName);
                     await Writer.FlushAsync();
@@ -139,6 +142,7 @@ namespace WinFormsChat
             async Task ReceiveMessageAsync(/*StreamReader reader*/)
             {
                 Reader = new StreamReader(client.GetStream());
+                if (Reader is null) return;
                 //Writer = new StreamWriter(client.GetStream());
                 while (true)
                 {
