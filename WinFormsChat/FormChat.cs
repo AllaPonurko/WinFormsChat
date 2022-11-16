@@ -34,8 +34,6 @@ namespace WinFormsChat
         ChatClient chatClient;
         public delegate void OnChangedMess(string msg);
         public static event OnChangedMess ChangeMess;
-        
-        //chatClient.userName = TempUser.Name;
         public void AddListBox(string mess)
         {
             lstChatOut.Items.Add(mess);
@@ -91,13 +89,11 @@ namespace WinFormsChat
             {
                 try
                 {
-                   //await client.ConnectAsync(host, port); //подключение клиента
                     Reader = new StreamReader(client.GetStream());
                     Writer = new StreamWriter(client.GetStream());
                     if (Writer is null || Reader is null) return;
                     // запускаем новый поток для получения данных
-                    await Task.Run(() => ReceiveMessageAsync());
-                    ChangeMess?.Invoke(msg);
+                    await Task.Run(() => ReceiveMessageAsync(Reader));
                     // запускаем ввод сообщений
                     if (msg == null) return;
                     await SendMessageAsync(Writer, msg);
@@ -118,12 +114,12 @@ namespace WinFormsChat
                 try
                 {  
                     // сначала отправляем имя
-                    await Writer.WriteLineAsync(userName);
-                    await Writer.FlushAsync();
+                    await writer.WriteLineAsync(userName);
+                    await writer.FlushAsync();
                     while (true)
                     {
-                        await Writer.WriteLineAsync(msg);
-                        await Writer.FlushAsync();
+                        await writer.WriteLineAsync(msg);
+                        await writer.FlushAsync();
                     }
                 }
 
@@ -138,22 +134,20 @@ namespace WinFormsChat
                 }
             }
             // получение сообщений
-            async Task ReceiveMessageAsync(/*StreamReader reader*/)
+            async Task ReceiveMessageAsync(StreamReader reader)
             {
-                Reader = new StreamReader(client.GetStream());
-                if (Reader is null) return;
-                //Writer = new StreamWriter(client.GetStream());
+                
+                if (reader is null) return;
+           
                 while (true)
                 {
                     try
                     {
                         // считываем ответ в виде строки
-                        string? message = await Reader.ReadLineAsync();
+                        string? message = await reader.ReadLineAsync();
                         ChangeMess?.Invoke(message);
                         // если пустой ответ, ничего не выводим 
                         if (string.IsNullOrEmpty(message)) continue;
-                        /*MyMess.mess = message;*///вывод сообщения
-                       
                     }
                     catch
                     {
