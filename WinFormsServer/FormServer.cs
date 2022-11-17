@@ -14,6 +14,8 @@ using FormsServer.MyDbContext;
 
 namespace FormsServer
 {
+    internal delegate void  OnChangedConnect(string str);
+       
     public class Temp
     {
         public string Name { get; set; }
@@ -23,21 +25,16 @@ namespace FormsServer
             flag = false;
         }
     }
-    public class TempMessage
-    {
-        public static string TempMess;
-    }
+    
     public partial class FormServer : Form
     { 
-        internal delegate void  OnChangedConnect(string str);
-        internal static event OnChangedConnect ChangedConnect;
+        
         public FormServer()
         {
             InitializeComponent();   
-            server = new Server(); // сервер
-            server.StartServer();
+            server = new Server(4000); // сервер
+            server.ServerStart();
             ChangedConnect += AddListConnection;
-            
             Controls.Add(new Button()
             {
                 Name = "btnUpDate",
@@ -50,35 +47,33 @@ namespace FormsServer
                 Name = "btnExit",
                 Text = "Выйти",
                 Left = 30,
-                Top = 200,
+                Top = 190,
             });
             txtAdress.Enabled = false;
             txtPort.Enabled = false;
             //dbChat = new DbChat();
         }
+        internal static event OnChangedConnect ChangedConnect;
         public static Temp temp = new Temp();
+        Server server; // сервер
+        public static DbChat dbChat;
         public void AddListConnection(string str)
         {
             lstConnection.Items.Add(DateTime.Now.ToShortTimeString()+" "+str + " is connected \n");
         }
-        Server server; // сервер
-        public static DbChat dbChat;
+        
         private void FormServer_Load(object sender, EventArgs e)
         {
             lstConnection.Items.Clear();
         }
         private void btnUpdate_Click(object sender, EventArgs e)
-        {
-            if (TempMessage.TempMess!=null)
-            {
-                ChangedConnect?.Invoke(TempMessage.TempMess);
-                
-            }
+        {   if(temp.flag)             
+            ChangedConnect?.Invoke(temp.Name);
         }
         private void btnExit_Click(object sender, EventArgs e)
         {
-            server.Disconnect();
-            this.Close();
+            
+            Close();
         }
     }
 }
