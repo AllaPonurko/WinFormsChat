@@ -22,8 +22,6 @@ namespace FormsServer
         
         public async void ServerStart()
         {
-            //if (task != null)
-            //    MessageBox.Show("Сервер уже запущен!");
             await ListenAsync();
         }
 
@@ -56,7 +54,7 @@ namespace FormsServer
             clients = new List<Client>();
         }
        
-        protected internal void RemoveConnection(string id)//удаление клиента
+        public  void RemoveConnection(string id)//удаление клиента
         {
             // получаем по id закрытое подключение
             Client client = clients.FirstOrDefault(c => c.Id == id);
@@ -65,7 +63,7 @@ namespace FormsServer
                 clients.Remove(client);
         }
 
-        protected internal async Task ListenAsync()// прослушивание входящих подключений
+        async Task ListenAsync()// прослушивание входящих подключений
         {
             try
             {
@@ -78,11 +76,8 @@ namespace FormsServer
                     tcpClient = await tcpListener.AcceptTcpClientAsync();
                     Client client = new Client(tcpClient,this);
                     clients.Add(client);
-                    await Task.Run(client.ProcessAsync);
-                    FormServer.temp.Name = client.Id;
-                    FormServer.temp.flag = true;
                     MessageBox.Show("Подключен новый клиент " + client.Id);
-                   
+                    await Task.Run(client.ProcessAsync);
                 }
             }
             catch (Exception ex)
@@ -93,7 +88,7 @@ namespace FormsServer
         }
 
         // трансляция сообщения подключенным клиентам
-        protected internal async Task BroadcastMessageAsync(string message, string id)
+        public  async Task BroadcastMessageAsync(string message, string id)
         {
             foreach (var client in clients)
             {
@@ -106,7 +101,7 @@ namespace FormsServer
             }
         }
 
-        protected internal void Disconnect()// отключение всех клиентов
+        protected  void Disconnect()// отключение всех клиентов
         {
             foreach (var client in clients)
             {

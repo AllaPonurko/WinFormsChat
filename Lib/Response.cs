@@ -1,5 +1,6 @@
 ﻿using Lib.Enum;
 using System;
+using System.Threading.Tasks;
 
 namespace Lib
 {
@@ -17,5 +18,9 @@ namespace Lib
         /// </summary>
         public object Body;
 
+        public static explicit operator Response(Task v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

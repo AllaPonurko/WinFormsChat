@@ -74,16 +74,16 @@ namespace FormsServer
             // 
             this.lstConnection.FormattingEnabled = true;
             this.lstConnection.ItemHeight = 15;
-            this.lstConnection.Location = new System.Drawing.Point(180, 13);
+            this.lstConnection.Location = new System.Drawing.Point(174, 12);
             this.lstConnection.Name = "lstConnection";
-            this.lstConnection.Size = new System.Drawing.Size(515, 199);
+            this.lstConnection.Size = new System.Drawing.Size(472, 199);
             this.lstConnection.TabIndex = 4;
             // 
             // FormServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(658, 261);
             this.Controls.Add(this.lstConnection);
             this.Controls.Add(this.txtPort);
             this.Controls.Add(this.label2);
@@ -93,8 +93,6 @@ namespace FormsServer
             this.Text = "Сервер";
             this.ResumeLayout(false);
             this.PerformLayout();
-            this.Height = 300;
-            this.Width = 650;
 
         }
 

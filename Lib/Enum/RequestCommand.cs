@@ -11,6 +11,7 @@ namespace Lib.Enum
         GET,
         POST,
         DELETE,
+        READ,
         END
     }
 }

@@ -15,15 +15,7 @@ using FormsServer.MyDbContext;
 namespace FormsServer
 {
         
-    public class Temp
-    {
-        public string Name { get; set; }
-        public bool flag;
-        public Temp()
-        {
-            flag = false;
-        }
-    }
+    
     
     public partial class FormServer : Form
     { 
@@ -55,12 +47,11 @@ namespace FormsServer
         }
         internal delegate void  OnChangedConnect(string str);
         internal static event OnChangedConnect ChangedConnect;
-        public static Temp temp = new Temp();
         Server server; // сервер
         public static DbChat dbChat;
         public void AddListConnection(string str)
         {
-            lstConnection.Items.Add(DateTime.Now.ToShortTimeString()+" "+str + " is connected \n");
+            lstConnection.Items.Add(DateTime.Now.ToShortTimeString()+" "+str+"\n" );
         }
         
         private void FormServer_Load(object sender, EventArgs e)
@@ -68,8 +59,12 @@ namespace FormsServer
             lstConnection.Items.Clear();
         }
         private void btnUpdate_Click(object sender, EventArgs e)
-        {   if(temp.flag)             
-            ChangedConnect?.Invoke(temp.Name+" is connected");
+        {   if(Client.tempMessage.flag==true)
+            {
+                AddListConnection(Client.tempMessage.mess);
+               //ChangedConnect?.Invoke(Client.tempMessage.mess);
+            }
+            
         }
         private void btnExit_Click(object sender, EventArgs e)
         {

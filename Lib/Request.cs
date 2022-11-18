@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Lib
 {
@@ -16,6 +17,11 @@ namespace Lib
             /// <summary>
             /// Данные для работы сервера
             /// </summary>
-            public object Body;   
+            public object Body;
+
+        public static explicit operator Request(Task<string> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
