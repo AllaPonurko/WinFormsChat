@@ -10,6 +10,7 @@ namespace Lib.Enum
         PUT,
         GET,
         POST,
-        DELETE
+        DELETE,
+        END
     }
 }

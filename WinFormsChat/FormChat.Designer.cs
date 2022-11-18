@@ -156,6 +156,7 @@ namespace WinFormsChat
             this.txtPass.Name = "txtPass";
             this.txtPass.Size = new System.Drawing.Size(122, 23);
             this.txtPass.TabIndex = 7;
+            this.txtPass.UseSystemPasswordChar=true;
             // 
             // label5
             // 
@@ -262,6 +263,8 @@ namespace WinFormsChat
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.ResumeLayout(false);
+            this.Height = 400;
+            this.Width = 650;
 
         }
 

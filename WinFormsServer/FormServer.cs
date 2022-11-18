@@ -14,8 +14,7 @@ using FormsServer.MyDbContext;
 
 namespace FormsServer
 {
-    internal delegate void  OnChangedConnect(string str);
-       
+        
     public class Temp
     {
         public string Name { get; set; }
@@ -32,7 +31,7 @@ namespace FormsServer
         public FormServer()
         {
             InitializeComponent();   
-            server = new Server(4000); // сервер
+            server = new Server(); // сервер
             server.ServerStart();
             ChangedConnect += AddListConnection;
             Controls.Add(new Button()
@@ -51,8 +50,10 @@ namespace FormsServer
             });
             txtAdress.Enabled = false;
             txtPort.Enabled = false;
+            
             //dbChat = new DbChat();
         }
+        internal delegate void  OnChangedConnect(string str);
         internal static event OnChangedConnect ChangedConnect;
         public static Temp temp = new Temp();
         Server server; // сервер
@@ -68,11 +69,10 @@ namespace FormsServer
         }
         private void btnUpdate_Click(object sender, EventArgs e)
         {   if(temp.flag)             
-            ChangedConnect?.Invoke(temp.Name);
+            ChangedConnect?.Invoke(temp.Name+" is connected");
         }
         private void btnExit_Click(object sender, EventArgs e)
         {
-            
             Close();
         }
     }

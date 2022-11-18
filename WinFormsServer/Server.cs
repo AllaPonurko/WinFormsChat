@@ -13,118 +13,108 @@ namespace FormsServer
 {
     public class Server
     {
-        int port;
+        
         string host = "127.0.0.1";
-        public Server(int port)
+        TcpListener tcpListener; // сервер для прослушивания
+        List<Client> clients; // все подключения
+        const int port = 4000;
+        TcpClient tcpClient;
+        
+        public async void ServerStart()
         {
-            this.port = port;
+            //if (task != null)
+            //    MessageBox.Show("Сервер уже запущен!");
+            await ListenAsync();
         }
-        Task task;
-        public void ServerStart()
+
+        //public void Run()//делегат для инициализации новой задачи по запуску сервера
+        //{
+        //    IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(host), port);
+        //    Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        //    try
+        //    {
+        //        socket.Bind(iPEnd);//соединение с локальной точкой
+        //        socket.Listen(10);//прослушивание порта
+        //        while (true)
+        //        {
+        //            Socket incoming = socket.Accept();//входящее соединение
+        //            Client client = new Client(incoming);//инициализируем клиента входящим соединением
+        //            Task task = new Task(client.run_connect);//создаём новую задачу по обработке клиента
+        //            task.Start();//запускаем задачу
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+
+        //}
+        
+
+        public Server()
         {
-            if (task != null)
-                MessageBox.Show("Сервер уже запущен!");
-            task = new Task(Run);
-            task.Start();
+            clients = new List<Client>();
         }
-        public void Run()//делегат для инициализации новой задачи по запуску сервера
+       
+        protected internal void RemoveConnection(string id)//удаление клиента
         {
-            IPEndPoint iPEnd = new IPEndPoint(IPAddress.Parse(host), port);
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            // получаем по id закрытое подключение
+            Client client = clients.FirstOrDefault(c => c.Id == id);
+            // и удаляем его из списка подключений
+            if (client != null)
+                clients.Remove(client);
+        }
+
+        protected internal async Task ListenAsync()// прослушивание входящих подключений
+        {
             try
             {
-                socket.Bind(iPEnd);//соединение с локальной точкой
-                socket.Listen(10);//прослушивание порта
+                tcpListener = new TcpListener(IPAddress.Parse(host), port);
+                tcpListener.Start();
+                MessageBox.Show("Сервер запущен. Ожидание подключений...");
+
                 while (true)
                 {
-                    Socket incoming = socket.Accept();//входящее соединение
-                    Client client = new Client(incoming);//инициализируем клиента входящим соединением
-                    Task task = new Task(client.run_connect);//создаём новую задачу по обработке клиента
-                    task.Start();//запускаем задачу
+                    tcpClient = await tcpListener.AcceptTcpClientAsync();
+                    Client client = new Client(tcpClient,this);
+                    clients.Add(client);
+                    await Task.Run(client.ProcessAsync);
+                    FormServer.temp.Name = client.Id;
+                    FormServer.temp.flag = true;
+                    MessageBox.Show("Подключен новый клиент " + client.Id);
+                   
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                Disconnect();
             }
-
         }
-        //    static TcpListener tcpListener; // сервер для прослушивания
-        //    List<Client> clients; // все подключения
-        //    const int port = 4000;
-        //    static TcpClient tcpClient;
 
-        //    public Server()
-        //    {
+        // трансляция сообщения подключенным клиентам
+        protected internal async Task BroadcastMessageAsync(string message, string id)
+        {
+            foreach (var client in clients)
+            {
+                if (client.Id != id) // если id клиента не равно id отправителя
+                {
+                    await client.Writer.WriteLineAsync(message); //передача данных
+                    await client.Writer.FlushAsync();
+                    MessageBox.Show("Сообщение передано");
+                }
+            }
+        }
 
-        //        tcpClient = new TcpClient();
-        //        clients = new List<Client>();
-        //    }
-        //    protected internal void AddConnection(Client client)//добавление клиента
-        //    {
-        //        clients.Add(client);
-
-        //    }
-        //    //protected internal void RemoveConnection(string id)//удаление клиента
-        //    //{
-        //    //    // получаем по id закрытое подключение
-        //    //    Client client = clients.FirstOrDefault(c => c.Id == id);
-        //    //    // и удаляем его из списка подключений
-        //    //    if (client != null)
-        //    //        clients.Remove(client);
-        //    //}
-
-        //    protected internal async Task ListenAsync()// прослушивание входящих подключений
-        //    {
-        //        try
-        //        {
-        //            tcpListener = new TcpListener(IPAddress.Parse("127.0.0.1"), port);
-        //            tcpListener.Start();
-        //            MessageBox.Show("Сервер запущен. Ожидание подключений...");
-
-        //            while (true)
-        //            {
-        //               tcpClient =await tcpListener.AcceptTcpClientAsync();
-        //                Client client = new Client();
-        //                clients.Add(client);
-        //                FormServer.temp.Name = client.NewUser.Login;
-        //                MessageBox.Show("Подключен новый клиент "+ client.NewUser.Login); 
-        //                await Task.Run(client.ProcessAsync);                
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //            Disconnect();
-        //        }
-        //    }
-
-        //    // трансляция сообщения подключенным клиентам
-        //    protected internal async Task BroadcastMessageAsync(string message, string id)
-        //    {
-        //        foreach (var client in clients)
-        //        {
-        //            if (client.Id != id) // если id клиента не равно id отправителя
-        //            {
-        //                await client.Writer.WriteLineAsync(message); //передача данных
-        //                await client.Writer.FlushAsync();
-        //                MessageBox.Show("Сообщение передано");
-        //            }
-        //        }
-        //    }
-
-        //    protected internal void Disconnect()// отключение всех клиентов
-        //    {
-        //        foreach (var client in clients)
-        //        {
-        //            client.Close(); //отключение клиента
-        //        }
-        //        tcpListener.Stop(); //остановка сервера
-        //    }
-        //    async public void StartServer()
-        //    {
-        //        await ListenAsync(); // запускаем сервер
-        //    }
+        protected internal void Disconnect()// отключение всех клиентов
+        {
+            foreach (var client in clients)
+            {
+                client._Close(); //отключение клиента
+            }
+            tcpListener.Stop(); //остановка сервера
+        }
+        
     }
 }
     
