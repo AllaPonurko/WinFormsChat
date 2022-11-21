@@ -19,10 +19,7 @@ namespace Lib
             /// </summary>
             public  object Body;
        
-        public Request()
-        {
-
-        }
+        
 
         public static explicit operator string(Request request)
         {
