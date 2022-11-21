@@ -1,4 +1,6 @@
 ﻿using Lib;
+using Lib.Entities;
+using Lib.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,14 +31,16 @@ namespace WinFormsChat
         StreamWriter Writer = null;
         TcpClient tcpClient;
         string userName;
+
         public FormChat()
         {
             InitializeComponent();
             ChangeMess += AddListBox;
             tcpClient = new TcpClient();
-            tcpClient.Connect(IPAddress.Parse(host), port);//    
+            tcpClient.Connect(IPAddress.Parse(host), port);// 
             Reader = new StreamReader(tcpClient.GetStream());
             Writer = new StreamWriter(tcpClient.GetStream());
+
 
         }
         public void AddListBox(string mess)
@@ -50,12 +54,14 @@ namespace WinFormsChat
                 return;
             else
             {
+            Request request = new Request();
+            request.Command = RequestCommand.READ;
+            request.Body = txtMessage.Text;
+            
                 lstChat.Items.Add(txtMessage.Text.ToString());
                 lstTime.Items.Add(DateTime.Now.ToLongTimeString());
-                MyMess.mess = DateTime.Now.ToLongTimeString() + " " +
-                txtMessage.Text;
                 txtMessage.Text = null;
-                await SendMessageAsync(MyMess.mess);
+                await Writer.WriteLineAsync((string)request);
             }
         }
 
@@ -196,8 +202,14 @@ namespace WinFormsChat
                 userName = txtName.Text;
                 lstChat.Items.Add($"Welcome, {userName}");
                 lstTime.Items.Add(DateTime.Now.ToLongTimeString());
+                Request request = new Request();
+                request.Command = RequestCommand.Auth;
+                Auth auth = new Auth();
+                auth.Email = txtName.Text;
+                auth.Pass = txtPass.Text;
+                request.Body = auth;
                 if (Writer is null) return;
-                await Writer.WriteLineAsync(userName);
+                await Writer.WriteLineAsync((string)request.Body);
                 await Writer.FlushAsync();
             }
         }
@@ -205,7 +217,7 @@ namespace WinFormsChat
         {
             try
             {
-                    if (Reader is null) return;
+                    
                     await Task.Run(() => ReceiveMessageAsync());//
                     
             }
@@ -217,7 +229,7 @@ namespace WinFormsChat
 
          async void ReceiveMessageAsync()
         {
-
+            if (Reader is null) return;
             while (true)
             {
                 try
@@ -240,6 +252,8 @@ namespace WinFormsChat
         async Task SendMessageAsync(string message)
         {    
             if (Writer is null) return;
+            await Writer.WriteLineAsync("READ");
+            await Writer.FlushAsync();
             await Writer.WriteLineAsync(message);
                 await Writer.FlushAsync();
         }

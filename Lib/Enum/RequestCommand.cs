@@ -6,12 +6,11 @@ namespace Lib.Enum
 {
     public enum RequestCommand
     {
-        Auth,
-        PUT,
-        GET,
-        POST,
+        Auth,       
         DELETE,
         READ,
         END
+     
     }
+    
 }

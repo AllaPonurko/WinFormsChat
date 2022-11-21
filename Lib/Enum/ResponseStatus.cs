@@ -5,6 +5,7 @@ using System.Text;
 namespace Lib.Enum
 {/// <summary>
 /// 
+/// 
 /// </summary>
     public enum ResponseStatus
     {

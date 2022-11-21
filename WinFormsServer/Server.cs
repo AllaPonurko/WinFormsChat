@@ -16,7 +16,7 @@ namespace FormsServer
         
         string host = "127.0.0.1";
         TcpListener tcpListener; // сервер для прослушивания
-        List<Client> clients; // все подключения
+        public List<Client> clients; // все подключения
         const int port = 4000;
         TcpClient tcpClient;
         

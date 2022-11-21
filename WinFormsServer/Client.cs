@@ -12,6 +12,7 @@ using FormsServer.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
+using Lib.Enum;
 
 namespace FormsServer
 {
@@ -137,89 +138,82 @@ namespace FormsServer
         public async Task ProcessAsync()
         {
             try
-                {
+            {
 
-                //Request request;
-                //Response response;
-                //request= (Request)Reader.ReadLineAsync();
-                //response = (Response)Writer.WriteLineAsync();
-                //while(true)
-                //{
-                //    switch (request.Command)
-                //{
-                //    case Lib.Enum.RequestCommand.Auth:
-                //        
-                //        NewUser.Login = await Reader.ReadLineAsync();
-                //        tempMessage.mess = $"{NewUser.Login} вошел в чат";
-                //        tempMessage.flag = true;
-                //            //response.StatusText = "Success";
-                //            MessageBox.Show(tempMessage.mess);
-                //        //tempMessage.mess = (string)response.Body;
-                //        await server.BroadcastMessageAsync(tempMessage.mess, Id);
-
-                //        Reader.Dispose();
-                //        break;
-                //    case Lib.Enum.RequestCommand.GET:
-                //        List<string> myMessages = new List<string>();
-                //        myMessages = (List<string>)request.Body;
-                //        break;
-                //    case Lib.Enum.RequestCommand.POST:
-
-
-                //        break;
-                //    case Lib.Enum.RequestCommand.PUT:
-
-                //        break;
-                //    case Lib.Enum.RequestCommand.DELETE:
-
-                //        break;
-                //    case Lib.Enum.RequestCommand.READ:
-                //            tempMessage.mess = await Reader.ReadLineAsync();
-                //            tempMessage.flag = true;
-                //            await server.BroadcastMessageAsync(tempMessage.mess, Id);
-                //            break;
-                //    case Lib.Enum.RequestCommand.END:
-                //            tempMessage.mess = $"{NewUser.Login} покинул чат";
-                //            //tempMessage.mess = (string)request.Body;
-                //            //response.StatusText = "Exit";
-                //            await server.BroadcastMessageAsync(tempMessage.mess, Id);
-                //            break;
-
-                //    default:
-                //        MessageBox.Show(" No Command ");
-                //        break;
-                //}
-
-                //}
-
-                //получаем имя пользователя
-                NewUser.Login = await Reader.ReadLineAsync();
-                tempMessage.mess = $"{NewUser.Login} вошел в чат";
-                tempMessage.flag = true;
-                MessageBox.Show(tempMessage.mess);
-                
-                // посылаем сообщение о входе в чат всем подключенным пользователям
-                await server.BroadcastMessageAsync(tempMessage.mess, Id);
-
-                //в бесконечном цикле получаем сообщения от клиента
+                Request request=new Request();
+                Response response;
+                request=(Request)await Reader.ReadLineAsync();
+                response = (Response)Writer.WriteLineAsync();
+                response.Body = response.StatusText + "\n" + tempMessage.mess;
                 while (true)
                 {
-                    try
+                    switch (request.Command)
                     {
-                        tempMessage.mess = await Reader.ReadLineAsync();
-                        if (tempMessage.mess == null) continue;
-                        string SendMessage = $"{NewUser.Login}: {tempMessage.mess}";
-                        await server.BroadcastMessageAsync(SendMessage, Id);
-                    
-                    }
-                    catch 
-                    {
-                        tempMessage.mess = $"{NewUser.Login} покинул чат";
-                        await server.BroadcastMessageAsync(tempMessage.mess, Id);
-                        break;
+                        case RequestCommand.Auth:
+                            
+                            NewUser.Login = await Reader.ReadLineAsync();
+                            tempMessage.mess = $"{NewUser.Login} вошел в чат";
+                            tempMessage.flag = true;
+                            response.Status = ResponseStatus.AUTH;
+                            response.StatusText = "Success";
+                            MessageBox.Show((string)response.Body);
+                            await server.BroadcastMessageAsync((string)response.Body, Id);
+                            break;
+
+
+                        case RequestCommand.DELETE:
+
+                            break;
+                        case RequestCommand.READ:
+                            tempMessage.mess = await Reader.ReadLineAsync();
+                            tempMessage.flag = true;
+                            response.Status = ResponseStatus.OK;
+                            response.StatusText = "Read";
+                            await server.BroadcastMessageAsync((string)response.Body, Id);
+                            break;
+                        case RequestCommand.END:
+                            tempMessage.mess = $"{NewUser.Login} покинул чат";
+                            response.Status = ResponseStatus.OK;
+                            response.StatusText = "Exit";
+                            //response.Body =response.StatusText + "\n" + tempMessage.mess;
+                            await server.BroadcastMessageAsync(tempMessage.mess, Id);
+                            break;
+
+                        default:
+                            MessageBox.Show(" No Command ");
+                            break;
                     }
 
-        }
+                }
+
+                ////получаем имя пользователя
+                //NewUser.Login = await Reader.ReadLineAsync();
+                //tempMessage.mess = $"{NewUser.Login} вошел в чат";
+                //tempMessage.flag = true;
+                //MessageBox.Show(tempMessage.mess);
+                
+                //// посылаем сообщение о входе в чат всем подключенным пользователям
+                //await server.BroadcastMessageAsync(tempMessage.mess, Id);
+
+                ////в бесконечном цикле получаем сообщения от клиента
+                //while (true)
+                //{
+                //    try
+                //    {
+                //        tempMessage.mess = await Reader.ReadLineAsync();
+                //        if (tempMessage.mess == null) continue;
+                //        string SendMessage = $"{NewUser.Login}: {tempMessage.mess}";
+                //        await server.BroadcastMessageAsync(SendMessage, Id);
+                    
+                //    }
+                //    catch 
+                //    {
+                //        tempMessage.mess = $"{NewUser.Login} покинул чат";
+                //        await server.BroadcastMessageAsync(tempMessage.mess, Id);
+                //        break;
+                //    }
+
+        //}
 
             }
                 
