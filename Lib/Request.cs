@@ -19,21 +19,19 @@ namespace Lib
             /// </summary>
             public  object Body;
        
-        
-
         public static explicit operator string(Request request)
         {
-         string str= request.Command.ToString()+" "+(string)request.Body;
+            string str= request.Command.command+" "+(string)request.Body;
             return str;
         }
         public static explicit operator Request(string str)
         { Request request = new Request();
             char ch = ' ';
             int indexOfChar = str.IndexOf(ch);
-            string body=str.Substring(indexOfChar+1); 
+            string body=str.Substring(indexOfChar+1);
             string command = str.Remove(indexOfChar, str.Length - indexOfChar);
             request.Body=body;
-            //request.Command= command;
+            request.Command.command = command;
             return request;
         }
         

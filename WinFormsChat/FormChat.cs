@@ -37,11 +37,8 @@ namespace WinFormsChat
             InitializeComponent();
             ChangeMess += AddListBox;
             tcpClient = new TcpClient();
-            tcpClient.Connect(IPAddress.Parse(host), port);// 
-            Reader = new StreamReader(tcpClient.GetStream());
-            Writer = new StreamWriter(tcpClient.GetStream());
-
-
+            Task.Run(() => ConnectToChat());
+            
         }
         public void AddListBox(string mess)
         {
@@ -54,14 +51,17 @@ namespace WinFormsChat
                 return;
             else
             {
-            Request request = new Request();
-            request.Command = RequestCommand.READ;
-            request.Body = txtMessage.Text;
-            
+                if (!tcpClient.Connected)
+                    await ConnectToChat();
+                Request request = new Request();
+                request.Body = txtMessage.Text;
+                request.Command.command = "READ";
                 lstChat.Items.Add(txtMessage.Text.ToString());
                 lstTime.Items.Add(DateTime.Now.ToLongTimeString());
                 txtMessage.Text = null;
-                await Writer.WriteLineAsync((string)request);
+                if (Writer is null)
+                    Writer = new StreamWriter(tcpClient.GetStream());
+                await SendMessageAsync((string)request);
             }
         }
 
@@ -178,12 +178,25 @@ namespace WinFormsChat
         //    }
         //}
 
-        private void btnExit_Click_1(object sender, EventArgs e)
-        {
-            Writer.WriteLineAsync($"{userName} покинул чат");
+        private async void btnExit_Click_1(object sender, EventArgs e)
+        {try
+            {
+            Request request = new Request();
+            request.Command.command = "END";
+            request.Body = $"{userName} покинул чат";
+            if (Writer is null)
+                Writer = new StreamWriter(tcpClient.GetStream());
+            await SendMessageAsync((string)request);
+            
             Writer?.Close();
             Reader?.Close();
             Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
         private async void btnEnter_Click(object sender, EventArgs e)
@@ -192,8 +205,9 @@ namespace WinFormsChat
                 MessageBox.Show("fields are not filled!");
             else
             {
-                
-                ConnectToChat();
+               try
+                {if(!tcpClient.Connected)
+                await ConnectToChat();
                 lstChat.Visible = true;
                 lstTime.Visible = true;
                 txtMessage.Visible = true;
@@ -203,23 +217,27 @@ namespace WinFormsChat
                 lstChat.Items.Add($"Welcome, {userName}");
                 lstTime.Items.Add(DateTime.Now.ToLongTimeString());
                 Request request = new Request();
-                request.Command = RequestCommand.Auth;
-                Auth auth = new Auth();
-                auth.Email = txtName.Text;
-                auth.Pass = txtPass.Text;
-                request.Body = auth;
-                if (Writer is null) return;
-                await Writer.WriteLineAsync((string)request.Body);
-                await Writer.FlushAsync();
+                request.Command.command="Auth" ;
+                request.Body =userName;
+                if (Writer is null)
+                    Writer = new StreamWriter(tcpClient.GetStream());
+                await SendMessageAsync((string)request);
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                
             }
         }
-         async void ConnectToChat()
+         async Task ConnectToChat()
         {
             try
             {
-                    
-                    await Task.Run(() => ReceiveMessageAsync());//
-                    
+                tcpClient.Connect(IPAddress.Parse(host), port);// 
+                Reader = new StreamReader(tcpClient.GetStream());
+                Writer = new StreamWriter(tcpClient.GetStream());
+                await Task.Run(() => ReceiveMessageAsync());//
             }
             catch (Exception ex)
             {
@@ -229,7 +247,8 @@ namespace WinFormsChat
 
          async void ReceiveMessageAsync()
         {
-            if (Reader is null) return;
+            if (Reader is null)
+            Reader = new StreamReader(tcpClient.GetStream());
             while (true)
             {
                 try
@@ -252,8 +271,6 @@ namespace WinFormsChat
         async Task SendMessageAsync(string message)
         {    
             if (Writer is null) return;
-            await Writer.WriteLineAsync("READ");
-            await Writer.FlushAsync();
             await Writer.WriteLineAsync(message);
                 await Writer.FlushAsync();
         }

@@ -141,17 +141,16 @@ namespace FormsServer
             {
 
                 Request request=new Request();
-                Response response;
+                Response response=new Response();
                 request=(Request)await Reader.ReadLineAsync();
                 response = (Response)Writer.WriteLineAsync();
-                response.Body = response.StatusText + "\n" + tempMessage.mess;
+                
                 while (true)
                 {
-                    switch (request.Command)
+                    switch (request.Command.command)
                     {
-                        case RequestCommand.Auth:
-                            
-                            NewUser.Login = await Reader.ReadLineAsync();
+                        case "Auth":
+                            NewUser.Login = (string)request.Body;
                             tempMessage.mess = $"{NewUser.Login} вошел в чат";
                             tempMessage.flag = true;
                             response.Status = ResponseStatus.AUTH;
@@ -161,22 +160,23 @@ namespace FormsServer
                             break;
 
 
-                        case RequestCommand.DELETE:
+                        case "DELETE":
 
                             break;
-                        case RequestCommand.READ:
-                            tempMessage.mess = await Reader.ReadLineAsync();
+                        case "READ":
+                            tempMessage.mess = (string)request.Body;
                             tempMessage.flag = true;
                             response.Status = ResponseStatus.OK;
                             response.StatusText = "Read";
+                            response.Body = tempMessage.mess;
                             await server.BroadcastMessageAsync((string)response.Body, Id);
                             break;
-                        case RequestCommand.END:
-                            tempMessage.mess = $"{NewUser.Login} покинул чат";
+                        case "END":
+                            tempMessage.mess = (string)request.Body;
                             response.Status = ResponseStatus.OK;
                             response.StatusText = "Exit";
-                            //response.Body =response.StatusText + "\n" + tempMessage.mess;
-                            await server.BroadcastMessageAsync(tempMessage.mess, Id);
+                            response.Body = response.StatusText + "\n" + tempMessage.mess;
+                            await server.BroadcastMessageAsync((string)response.Body, Id);
                             break;
 
                         default:

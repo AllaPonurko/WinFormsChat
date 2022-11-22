@@ -4,13 +4,10 @@ using System.Text;
 
 namespace Lib.Enum
 {
-    public enum RequestCommand
+    public class RequestCommand
     {
-        Auth,       
-        DELETE,
-        READ,
-        END
-     
+       public /*static*/ string command{ get; set; } 
+        
     }
     
 }
